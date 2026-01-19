@@ -8,8 +8,11 @@
     body { font-family: system-ui; background: linear-gradient(135deg, #FFD700, #FFA500); text-align: center; padding: 20px; }
     h1 { font-size: 3rem; background: linear-gradient(45deg, #FFD700, white); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .btn { padding: 15px 30px; background: #FF6B35; color: white; text-decoration: none; border-radius: 50px; margin: 10px; display: inline-block; }
+    .whatsapp { background: #25D366 !important; font-size: 1.2rem; }
     .projects { display: grid; grid-template-columns: repeat(auto-fit, 1fr); gap: 20px; max-width: 800px; margin: 40px auto; }
     .project { background: rgba(255,255,255,0.9); padding: 20px; border-radius: 20px; }
+    #admin-panel { display: none; background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 20px; margin: 20px auto; max-width: 600px; }
+    input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: none; }
   </style>
 </head>
 <body>
@@ -17,15 +20,87 @@
   <p style="font-size: 1.3rem; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 600px;">
     تعلم بناء المواقع والتطبيقات بالذكاء الاصطناعي خطوة بخطوة في دقائق، علم عائلتك بدون دراسة سنين!
   </p>
-  <a href="https://ipn.eg/S/salah.hamed3646/instapay/9kwYEE" class="btn" style="background: #00C851; font-size: 1.2rem;">💰 ادفع عبر Instapay</a>
+  <a href="https://ipn.eg/S/salah.hamed3646/instapay/9kwYEE" class="btn" style="background: #00C851;">💰 ادفع عبر Instapay</a>
   <a href="login.html" class="btn">ابدأ الكورس</a>
-  <a href="admin.html" class="btn">لوحة الأدمن</a>
+  <a href="https://wa.me/201508830993?text=مرحبا، مهتم بـ Family Project" class="btn whatsapp">💬 واتساب دعم</a>
   
   <h2>مشاريع Demo</h2>
-  <div class="projects">
-    <div class="project"><h3>تطبيق توصيل قهوة</h3><p>Firebase realtime tracking.</p></div>
-    <div class="project"><h3>متجر ملابس تقليدية</h3><p>منصة e-commerce كاملة.</p></div>
-    <div class="project"><h3>كتاب تلوين أطفال</h3><p>حفظ رسومات مع Firebase.</p></div>
+  <div id="projects-container" class="projects">
+    <!-- المشاريع هتتحمّل هنا من localStorage -->
   </div>
+
+  <!-- لوحة الأدمن المخفية -->
+  <div id="admin-panel">
+    <h3>🔧 لوحة الأدمن</h3>
+    <input id="admin-pass" type="password" placeholder="كلمة السر (admin123)">
+    <button class="btn" onclick="toggleAdmin()">دخول أدمن</button>
+    <div id="admin-content" style="display:none;">
+      <h4>تفعيل كورس لعميل</h4>
+      <input id="user-email" placeholder="إيميل العميل">
+      <button class="btn" onclick="activateUser()">تفعيل الكورس</button>
+      
+      <h4>إدارة المشاريع</h4>
+      <input id="proj-title" placeholder="اسم المشروع">
+      <input id="proj-url" placeholder="لينك المشروع">
+      <textarea id="proj-desc" placeholder="نبذة"></textarea>
+      <button class="btn" onclick="addProject()">إضافة مشروع</button>
+      <div id="projects-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // كلمة سر الأدمن البسيطة (غيّرها لو عايز)
+    const ADMIN_PASS = 'admin123';
+    
+    function toggleAdmin() {
+      if (document.getElementById('admin-pass').value === ADMIN_PASS) {
+        document.getElementById('admin-content').style.display = 'block';
+        loadProjects();
+      } else alert('كلمة السر غلط');
+    }
+    
+    // إدارة المشاريع (محفوظة محليًا)
+    function loadProjects() {
+      const projects = JSON.parse(localStorage.getItem('projects')) || [
+        {title: 'تطبيق توصيل قهوة', url: '#', desc: 'Firebase realtime tracking.'},
+        {title: 'متجر ملابس تقليدية', url: '#', desc: 'منصة e-commerce كاملة.'},
+        {title: 'كتاب تلوين أطفال', url: '#', desc: 'حفظ رسومات مع Firebase.'}
+      ];
+      let html = '';
+      projects.forEach((p, i) => {
+        html += `<div class="project"><h3>${p.title}</h3><p>${p.desc}</p><a href="${p.url}">زيارة</a> <button onclick="deleteProject(${i})">حذف</button></div>`;
+      });
+      document.getElementById('projects-container').innerHTML = html;
+      document.getElementById('projects-list').innerHTML = html;
+    }
+    
+    function addProject() {
+      const projects = JSON.parse(localStorage.getItem('projects')) || [];
+      projects.push({
+        title: document.getElementById('proj-title').value,
+        url: document.getElementById('proj-url').value,
+        desc: document.getElementById('proj-desc').value
+      });
+      localStorage.setItem('projects', JSON.stringify(projects));
+      loadProjects();
+    }
+    
+    function deleteProject(index) {
+      const projects = JSON.parse(localStorage.getItem('projects'));
+      projects.splice(index, 1);
+      localStorage.setItem('projects', JSON.stringify(projects));
+      loadProjects();
+    }
+    
+    function activateUser() {
+      const email = document.getElementById('user-email').value;
+      // هنا ممكن تربط Firebase، دلوقتي local
+      localStorage.setItem(email + '_course', 'active');
+      alert(`تم تفعيل الكورس لـ ${email}`);
+    }
+    
+    // تحميل المشاريع عند البداية
+    loadProjects();
+  </script>
 </body>
 </html>
