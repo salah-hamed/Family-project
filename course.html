@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>الكورس - Family Project</title>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <style> /* ستايل مبهج مع انيميشنز */ .slide { padding: 40px; text-align: center; animation: fadeIn 1s; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } </style>
+</head>
+<body>
+  <div id="course-content" style="display:none;">
+    <!-- محتوى الكورس هنا: خطوات بناء مواقع بـ Firebase، AI، إلخ. أضف slides كثيرة -->
+    <div class="slide"><h1>الدرس 1: إعداد Firebase</h1><p>خطوة بخطوة...</p></div>
+    <!-- أكثر من 20 slide بناءً على السابق -->
+  </div>
+  <div id="no-access">الكورس غير مفعّل. أرسل إيميلك بعد الدفع.</div>
+  <script src="app.js"></script>
+  <script>
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const doc = await getDoc(doc(db, 'users', user.uid));
+        if (doc.exists() && doc.data().courseAccess) document.getElementById('course-content').style.display = 'block';
+        else document.getElementById('no-access').style.display = 'block';
+      } else window.location = 'login.html';
+    });
+  </script>
+</body>
+</html>
