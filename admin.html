@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<!-- ستايل مشابه -->
+<body>
+  <h1>لوحة الأدمن</h1>
+  <input id="userEmail" placeholder="إيميل المستخدم">
+  <button onclick="activateCourse()">تفعيل الكورس</button>
+  <script src="app.js"></script>
+  <script>
+    function activateCourse() {
+      const email = document.getElementById('userEmail').value;
+      // ابحث عن اليوزر وفعّل
+      getUserByEmail(email).then(user => {
+        if (user) updateDoc(doc(db, 'users', user.uid), { courseAccess: true });
+        alert('تم التفعيل!');
+      });
+    }
+  </script>
+</body>
+</html>
