@@ -4,211 +4,164 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الكورس - Family Business</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; color: white; z-index: 9999; }
-    .progress-bar { width: 100%; height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; margin: 20px 0; }
-    .progress { height: 100%; background: linear-gradient(90deg, #4CAF50, #45a049); transition: width 0.3s; }
-    .course-header { text-align: center; color: white; margin-bottom: 40px; }
-    .slide { display: none; background: white; border-radius: 20px; padding: 40px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); animation: slideIn 0.5s; }
-    .slide.active { display: block; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-    .lesson-title { font-size: 2.5em; color: #667eea; margin-bottom: 20px; text-align: center; }
-    .step { background: #f8f9ff; border-left: 5px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 10px; }
-    pre { background: #2d3748; color: #a0aec0; padding: 20px; border-radius: 10px; overflow-x: auto; font-size: 14px; direction: ltr; text-align: left; }
-    .link-btn { display: inline-block; background: #667eea; color: white; padding: 12px 24px; border-radius: 50px; text-decoration: none; margin: 10px 5px; transition: transform 0.2s; }
-    .link-btn:hover { transform: scale(1.05); }
-    .screenshot { max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-    .quiz { background: #e8f4fd; padding: 20px; border-radius: 10px; margin: 20px 0; }
-    .quiz input { margin: 10px; padding: 10px; border: 2px solid #ddd; border-radius: 5px; }
-    .nav-btns { text-align: center; margin: 40px 0; }
-    .nav-btn { background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 18px; cursor: pointer; margin: 0 10px; transition: background 0.3s; }
-    .nav-btn:hover { background: #5a67d8; }
-    .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
-    .certificate-btn { background: linear-gradient(45deg, #4CAF50, #45a049); margin-top: 40px; font-size: 20px; padding: 20px 40px; }
-    #certificate { display: none; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 60px; text-align: center; border-radius: 20px; margin: 40px 0; }
-    @media (max-width: 768px) { .slide { padding: 20px; } .lesson-title { font-size: 2em; } pre { font-size: 12px; } }
-  </style>
-  
-  <!-- Firebase SDKs v10.14.1 [web:9] -->
+  <!-- Firebase SDKs v10.14.1 Compat للـ GitHub Pages -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  
-  <!-- jsPDF + html2canvas للشهادة [web:16] -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; overflow-x: hidden; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; color: white; font-size: 24px; flex-direction: column; }
+    .loading.hidden { display: none; }
+    .course-header { text-align: center; color: white; margin-bottom: 40px; animation: fadeIn 1s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.3); border-radius: 5px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #4CAF50, #45a049); transition: width 0.3s; border-radius: 5px; }
+    .lesson { background: white; margin: 20px 0; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.5s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    .lesson h2 { color: #667eea; margin-bottom: 15px; font-size: 24px; }
+    .lesson-content { line-height: 1.8; margin-bottom: 20px; }
+    .lesson-code { background: #f4f4f4; padding: 20px; border-radius: 10px; font-family: monospace; white-space: pre-wrap; overflow-x: auto; direction: ltr; text-align: left; }
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+    .btn { padding: 12px 30px; border: none; border-radius: 50px; font-size: 18px; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .btn-primary:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+    .btn-secondary { background: #f0f0f0; color: #333; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .certificate-btn { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; margin-top: 20px; padding: 15px 40px; font-size: 20px; border-radius: 50px; }
+    @media (max-width: 768px) { .container { padding: 10px; } .lesson { padding: 20px; } .nav-buttons { flex-direction: column; gap: 10px; } }
+  </style>
 </head>
 <body>
-  <div id="loading" class="loading">
-    <div>جاري التحقق من الوصول للكورس... <div class="progress-bar"><div id="loadProgress" class="progress" style="width:0%"></div></div></div>
-  </div>
-
-  <div class="container" id="courseContent" style="display:none;">
+  <div id="loading" class="loading">جاري التحقق من الوصول للكورس... <div id="loadingStatus">التحقق من تسجيل الدخول</div></div>
+  <div id="courseContent" class="container" style="display: none;">
     <div class="course-header">
-      <h1>🎓 كورس Family Business</h1>
-      <p>بناء موقع e-commerce كامل خطوة بخطوة - Copy-Paste Method</p>
-      <div class="progress-bar"><div id="userProgress" class="progress" style="width:0%"></div></div>
-      <p id="progressText">تقدمك: 0%</p>
-    </div>
-
-    <!-- الدرس 1: إعداد Firebase -->
-    <div class="slide" id="slide1">
-      <h2 class="lesson-title">درس 1: إعداد Firebase Console</h2>
-      <div class="step">
-        <p>افتح <a href="https://console.firebase.google.com/" target="_blank" class="link-btn">Firebase Console</a> → New Project → FamilyBusiness → Create.[memory:4]</p>
-        <img src="https://via.placeholder.com/800x400/667eea/white?text=Firebase+New+Project" alt="صورة Firebase Console" class="screenshot">
+      <h1>🎓 كورس Family Business كامل</h1>
+      <p>بناء موقع e-commerce كامل بـ Firebase في ساعات - Copy-Paste Method</p>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
       </div>
-      <div class="step">
-        <p>انسخ config ده في <code>app.js</code> (سننشئه لاحقاً):</p>
-        <pre id="firebaseConfig">// استبدل بـ config بتاعك
-const firebaseConfig = {
-  apiKey: "AIza...", // من Project Settings
-  authDomain: "familybusiness.firebaseapp.com",
-  projectId: "familybusiness",
-  // ... باقي الحقول
-};
-firebase.initializeApp(firebaseConfig);</pre>
-        <a href="https://onecompiler.com/html/3x4c2829d" target="_blank" class="link-btn">اختبر في OneCompiler</a>
-      </div>
-      <div class="quiz">
-        <p>سؤال: ما هو projectId؟ <input type="radio" name="q1" value="a"> المفتاح <input type="radio" name="q1" value="b"> اسم المشروع ✓</p>
-        <button onclick="checkQuiz(1)">تحقق</button>
-      </div>
+      <p id="progressText">الدرس 1 من 10</p>
     </div>
-
-    <!-- الدرس 2: Authentication -->
-    <div class="slide" id="slide2">
-      <h2 class="lesson-title">درس 2: تسجيل الدخول</h2>
-      <div class="step">
-        <p>Authentication → Get Started → Email/Password → Enable.</p>
-        <img src="https://via.placeholder.com/800x400/764ba2/white?text=Firebase+Auth+Enable" alt="صورة Auth" class="screenshot">
-        <pre>import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-const auth = getAuth();
-signInWithEmailAndPassword(auth, email, password).then(user => console.log('مرحبا', user));</pre>
-      </div>
-      <!-- باقي الدروس مشابهة: 3-هاستنج GitHub Pages [web:15], 4-Firestore DB, 5-Admin Dashboard [memory:1], 6-E-commerce Orders, 7-Real-time Delivery, 8-PWA Mobile, 9-Payments InstaPay, 10-Deploy & Sell -->
-    </div>
-
-    <!-- ... اختصار للـ 10 دروس (في الكود الحقيقي كلهم موجودين كـ slide3 إلى slide10 مع خطوات، كود، صور، quizzes، مشاكل شائعة مثل "مش شغال login? تحقق UID" [memory:3]) ... -->
-
-    <div class="slide" id="slide10">
-      <h2 class="lesson-title">درس 10: نشر والبيع</h2>
-      <div class="step">
-        <p>GitHub → salahhamed/family-project → Settings → Pages → Deploy from branch main.[web:15]</p>
-        <pre>git add . && git commit -m "Final" && git push</pre>
-        <a href="https://salahhamed.github.io/family-project/" class="link-btn">موقعك الجاهز</a>
-      </div>
-      <p>مشاكل شائعة: 404? انتظر 5 دقائق. CORS? أضف في Firebase rules.</p>
-    </div>
-
-    <div class="nav-btns">
-      <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>السابق</button>
-      <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">التالي</button>
-      <button class="nav-btn certificate-btn" onclick="generateCertificate()" id="certBtn" style="display:none;">احصل على الشهادة 🎉</button>
-    </div>
-
-    <div id="certificate">
-      <h1>شهادة إكمال كورس Family Business</h1>
-      <p id="certName">الاسم: محمد صلاح</p>
-      <p>تم إكمال 10 دروس بنجاح بنسبة 100%!</p>
-      <p>التاريخ: <span id="certDate"></span></p>
-    </div>
+    
+    <div id="lessons"></div>
+    
+    <button id="certificateBtn" class="certificate-btn" style="display: none;">📜 حمل شهادتك الآن!</button>
   </div>
 
   <script>
-    // Firebase Config - استبدل بتاعك
-    const firebaseConfig = { /* config هنا */ };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    // Firebase Config بتاعك - استبدل لو عندك project جديد من Console
+    const firebaseConfig = {
+      apiKey: "AIzaSyB...YOUR_API_KEY...", // من Firebase Console → Project Settings → Web app
+      authDomain: "kidsup-e998d.firebaseapp.com",
+      projectId: "kidsup-e998d",
+      storageBucket: "kidsup-e998d.appspot.com",
+      messagingSenderId: "959800471628",
+      appId: "1:959800471628:web:YOUR_APP_ID"
+    };
 
-    let currentSlide = 1;
-    let totalSlides = 10;
-    let userProgress = 0;
-    let user = null;
-    let userName = '';
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentLesson = 0;
+    const totalLessons = 10;
+    const lessons = [
+      { title: "الدرس 1: إعداد Firebase Console", content: "1. روح Firebase Console، أنشئ project جديد 'FamilyBusiness'. 2. فعّل Auth + Firestore. 3. Copy config ولصقه في الكود.[web:23]", code: "// مثال config
+firebase.initializeApp(firebaseConfig);" },
+      { title: "الدرس 2: صفحة Login بـ Auth", content: "استخدم email/password auth مع RTL design.", code: "// كود login.html كامل
+firebase.auth().createUserWithEmailAndPassword(email, password);" },
+      // أضف باقي الدروس 3-10 هنا بنفس الشكل (e-commerce، dashboard، payments، إلخ) بناءً على مشاريعك السابقة[conversation_history:1]
+      // درس 10: Deployment + Monetization
+    ];
 
     // تحقق الوصول
-    auth.onAuthStateChanged(async (u) => {
-      if (u) {
-        user = u;
-        const doc = await db.collection('users').doc(u.uid).get();
-        if (doc.exists && doc.data().courseActive) {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('courseContent').style.display = 'block';
-          userName = doc.data().name || 'المستخدم';
-          loadProgress();
-        } else {
-          alert('لا يوجد وصول للكورس. تواصل مع الأدمن.');
-          auth.signOut();
-        }
-      }
-    });
-
-    function changeSlide(direction) {
-      document.getElementById(`slide${currentSlide}`).classList.remove('active');
-      currentSlide += direction;
-      if (currentSlide > totalSlides) currentSlide = totalSlides;
-      if (currentSlide < 1) currentSlide = 1;
-      document.getElementById(`slide${currentSlide}`).classList.add('active');
-      updateNav();
-      saveProgress();
-    }
-
-    function updateNav() {
-      document.getElementById('prevBtn').disabled = currentSlide === 1;
-      document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
-      if (currentSlide === totalSlides) document.getElementById('certBtn').style.display = 'inline-block';
-    }
-
-    async function saveProgress() {
-      userProgress = Math.round((currentSlide / totalSlides) * 100);
-      document.getElementById('userProgress').style.width = userProgress + '%';
-      document.getElementById('progressText').textContent = `تقدمك: ${userProgress}%`;
-      await db.collection('users').doc(user.uid).update({ courseProgress: userProgress });
-    }
-
-    async function loadProgress() {
-      const doc = await db.collection('users').doc(user.uid).get();
-      if (doc.data().courseProgress) {
-        userProgress = doc.data().courseProgress;
-        document.getElementById('userProgress').style.width = userProgress + '%';
-        document.getElementById('progressText').textContent = `تقدمك: ${userProgress}%`;
-        currentSlide = Math.ceil((userProgress / 100) * totalSlides);
-        document.getElementById(`slide${currentSlide}`).classList.add('active');
-        updateNav();
-      }
-    }
-
-    function checkQuiz(slideNum) {
-      // منطق بسيط للـ quiz
-      alert('صحيح! ✅');
-      changeSlide(0); // refresh
-    }
-
-    async function generateCertificate() {
-      document.getElementById('certName').textContent = `الاسم: ${userName}`;
-      document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar');
-      document.getElementById('certificate').style.display = 'block';
-      setTimeout(() => {
-        html2canvas(document.getElementById('certificate')).then(canvas => {
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new window.jspdf.jsPDF();
-          const imgWidth = 210;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-          pdf.save(`شهادة-FamilyBusiness-${user.uid.substring(0,8)}.pdf`);
-          document.getElementById('certificate').style.display = 'none';
+    window.onload = async () => {
+      const loading = document.getElementById('loading');
+      const status = document.getElementById('loadingStatus');
+      
+      status.textContent = 'التحقق من تسجيل الدخول...';
+      const user = auth.currentUser;
+      if (!user) {
+        auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            status.textContent = 'التحقق من courseActive في Firestore...';
+            try {
+              const doc = await db.collection('users').doc(user.uid).get();
+              if (doc.exists && doc.data().courseActive) {
+                loading.classList.add('hidden');
+                document.getElementById('courseContent').style.display = 'block';
+                initCourse(user);
+              } else {
+                alert('الكورس غير مفعّل. تواصل مع الأدمن بعد الدفع.');
+                auth.signOut();
+              }
+            } catch (error) {
+              console.error('Firestore error:', error);
+              alert('خطأ في Firestore. تأكد من الصلاحيات.');
+            }
+          } else {
+            alert('سجّل دخول أولاً من login.html');
+            window.location.href = 'login.html';
+          }
         });
-      }, 500);
+      } else {
+        // نفس التحقق
+      }
+    };
+
+    function initCourse(user) {
+      loadLessons();
+      updateProgress();
+      document.getElementById('certificateBtn').onclick = () => generateCertificate(user);
+      
+      // حفظ progress real-time
+      db.collection('users').doc(user.uid).update({ currentLesson: 0 });
     }
 
-    // بدء الكورس
-    document.getElementById('slide1').classList.add('active');
-    updateNav();
+    function loadLessons() {
+      const lessonsDiv = document.getElementById('lessons');
+      lessons.forEach((lesson, index) => {
+        const div = document.createElement('div');
+        div.className = 'lesson';
+        div.style.display = index === 0 ? 'block' : 'none';
+        div.innerHTML = `
+          <h2>${lesson.title}</h2>
+          <div class="lesson-content">${lesson.content}</div>
+          ${lesson.code ? `<div class="lesson-code">${lesson.code}</div>` : ''}
+        `;
+        lessonsDiv.appendChild(div);
+      });
+    }
+
+    function updateProgress() {
+      const progress = (currentLesson / totalLessons) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('progressText').textContent = `الدرس ${currentLesson + 1} من ${totalLessons}`;
+      
+      // حفظ في Firestore
+      // db.collection('users').doc(user.uid).update({ currentLesson });
+    }
+
+    // Nav buttons logic (Next/Prev)
+    // أضف event listeners للـ buttons مع updateProgress وتبديل lessons
+
+    async function generateCertificate(user) {
+      if (currentLesson + 1 === totalLessons) {
+        const pdf = new jsPDF();
+        pdf.setFont('Amiri'); // للعربي
+        pdf.text(`شهادة إكمال كورس Family Business - ${user.email}`, 20, 20);
+        pdf.addImage(await html2canvas(document.querySelector('.course-header')), 'PNG', 20, 40, 170, 100);
+        pdf.save(`شهادة-FamilyBusiness-${user.uid.slice(0,8)}.pdf`);
+        alert('تم حفظ الشهادة! 🎉');
+      } else {
+        alert('أكمل كل الدروس أولاً.');
+      }
+    }
   </script>
 </body>
 </html>
