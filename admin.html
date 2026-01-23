@@ -3,79 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>داشبورد الأدمن - Family Project</title>
+  <title>داشبورد الأدمن - Family Business</title>
+  
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
+  
   <style>
-    /* نفس ستايل الـ admin اللي عملناه قبل كده */
-    body { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; font-family: system-ui; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .container { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 25px; padding: 40px; max-width: 600px; width: 100%; }
-    .admin-login { text-align: center; }
-    input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 12px; border: none; font-size: 1.1rem; }
-    .btn { width: 100%; padding: 15px; background: linear-gradient(45deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 12px; font-size: 1.2rem; cursor: pointer; margin-top: 10px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      min-height: 100vh; 
+      color: #333;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .login-form { 
+      background: white; border-radius: 20px; padding: 40px; max-width: 400px; margin: 100px auto; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+    }
     .dashboard { display: none; }
-    .user-list { margin-top: 30px; }
-    .user-item { background: rgba(255,255,255,0.1); padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .activate-btn { background: #27ae60; padding: 8px 15px; border-radius: 20px; border: none; color: white; cursor: pointer; }
+    h1 { background: linear-gradient(45deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 30px; }
+    .card { background: white; border-radius: 15px; padding: 25px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .btn { 
+      background: linear-gradient(45deg, #FF6B6B, #FF8E8E); color: white; border: none; padding: 12px 24px; 
+      border-radius: 25px; cursor: pointer; font-size: 16px; transition: transform 0.2s; 
+    }
+    .btn:hover { transform: scale(1.05); }
+    .btn-success { background: linear-gradient(45deg, #4CAF50, #81C784); }
+    .btn-danger { background: linear-gradient(45deg, #F44336, #EF5350); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 15px; text-align: right; border-bottom: 1px solid #ddd; }
+    th { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+    input, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; margin: 10px 0; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .stat-card { background: linear-gradient(45deg, #FFD700, #FFA500); color: white; padding: 20px; border-radius: 15px; text-align: center; }
+    .logout { position: absolute; top: 20px; left: 20px; }
+    @media (max-width: 768px) { .container { padding: 10px; } }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- شاشة تسجيل الدخول للأدمن -->
-    <div id="admin-login" class="admin-login">
-      <h1>🔐 داشبورد الأدمن</h1>
-      <p>تسجيل الدخول كأدمن</p>
-      <input type="email" id="admin-email" placeholder="إيميل الأدمن">
-      <input type="password" id="admin-password" placeholder="كلمة السر">
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="login-form">
+      <h1>🎉 Family Business Admin</h1>
+      <input type="email" id="adminEmail" placeholder="الإيميل: admin@familybusiness.com" />
+      <input type="password" id="adminPass" placeholder="كلمة السر: admin123456" />
       <button class="btn" onclick="adminLogin()">دخول الأدمن</button>
-      <p style="margin-top: 20px; opacity: 0.8;">
-        <a href="index.html">← العودة للرئيسية</a>
-      </p>
+      <p style="text-align: center; margin-top: 20px; color: #666;">محمي 100% من المستخدمين العاديين</p>
     </div>
-    
+
     <!-- داشبورد الأدمن -->
-    <div id="admin-dashboard" class="dashboard">
-      <h1>⚙️ لوحة تحكم الأدمن</h1>
-      <p>مرحباً <span id="admin-name"></span> | <button class="btn" onclick="adminLogout()" style="width: auto; padding: 10px 20px; margin-left: 20px;">خروج</button></p>
+    <div id="adminDashboard" class="dashboard">
+      <button class="btn logout" onclick="adminLogout()">خروج</button>
       
-      <h3>🎯 تفعيل كورس لعملاء جدد</h3>
-      <input type="email" id="new-user-email" placeholder="إيميل العميل الجديد">
-      <button class="btn" onclick="activateNewUser()">تفعيل الكورس</button>
+      <h1>لوحة تحكم Family Business 🚀</h1>
       
-      <div class="user-list" id="users-list">
-        <!-- قائمة المستخدمين هتتحمّل هنا -->
+      <!-- الإحصائيات -->
+      <div class="stats" id="stats"></div>
+      
+      <!-- إدارة المستخدمين -->
+      <div class="card">
+        <h2>👥 المستخدمين (من Firestore)</h2>
+        <table id="usersTable">
+          <thead><tr><th>الإيميل</th><th>تفعيل الكورس</th><th>أدمن؟</th><th>إجراءات</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      
+      <!-- إدارة المشاريع Demo -->
+      <div class="card">
+        <h2>⭐ مشاريع Demo (تعرض في index.html)</h2>
+        <input id="projectTitle" placeholder="عنوان المشروع" />
+        <textarea id="projectDesc" placeholder="نبذة عن المشروع"></textarea>
+        <input id="projectLink" placeholder="رابط المشروع" />
+        <button class="btn btn-success" onclick="addProject()">إضافة مشروع</button>
+        <table id="projectsTable">
+          <thead><tr><th>العنوان</th><th>النبذة</th><th>الرابط</th><th>إجراءات</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
   </div>
 
   <script>
-    const ADMIN_EMAIL = 'admin@familyproject.com'; // غيّرها لإيميلك الحقيقي
-    const ADMIN_PASSWORD = 'admin123'; // غيّرها
-    
+    // دالة تسجيل دخول الأدمن (محمي بـ Firebase Auth)
     async function adminLogin() {
-      const email = document.getElementById('admin-email').value;
-      const password = document.getElementById('admin-password').value;
-      
-      if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-        alert('إيميل أو كلمة سر الأدمن خاطئة!');
-        return;
-      }
+      const email = document.getElementById('adminEmail').value;
+      const pass = document.getElementById('adminPass').value;
       
       try {
-        await window.fpSignIn(email, password);
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        document.getElementById('admin-name').textContent = email;
-        loadUsers();
+        await firebase.auth().signInWithEmailAndPassword(email, pass);
+        const user = firebase.auth().currentUser;
+        if (user) {
+          // تحقق إنه أدمن من Firestore
+          const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+          if (doc.exists && doc.data().isAdmin) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadDashboard();
+          } else {
+            alert('ليس لديك صلاحيات أدمن!');
+            firebase.auth().signOut();
+          }
+        }
       } catch (error) {
-        alert('خطأ: ' + error.message);
+        alert('خطأ في تسجيل الدخول: ' + error.message);
       }
     }
     
+    // خروج
     async function adminLogout() {
-      await window.fpSignOut();
-      location.reload();
+      await firebase.auth().signOut();
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'block';
     }
     
-    async function activateNewUser()
+    // تحميل الداشبورد
+    async function loadDashboard() {
+      loadStats();
+      loadUsers();
+      loadProjects();
+    }
+    
+    // الإحصائيات
+    async function loadStats() {
+      const usersSnapshot = await firebase.firestore().collection('users').get();
+      const projectsSnapshot = await firebase.firestore().collection('projects').get();
+      const activeUsers = usersSnapshot.docs.filter(doc => doc.data().courseActive).length;
+      
+      document.getElementById('stats').innerHTML = `
+        <div class="stat-card"><h3>${usersSnapshot.size}</h3><p>إجمالي المستخدمين</p></div>
+        <div class="stat-card"><h3>${activeUsers}</h3><p>مفعّلين الكورس</p></div>
+        <div class="stat-card"><h3>${projectsSnapshot.size}</h3><p>مشاريع Demo</p></div>
+      `;
+    }
+    
+    // تحميل المستخدمين
+    async function loadUsers() {
+      const snapshot = await firebase.firestore().collection('users').get();
+      const tbody = document.querySelector('#usersTable tbody');
+      tbody.innerHTML = '';
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.email}</td>
+            <td>${data.courseActive ? '✅' : '❌'}</td>
+            <td>${data.isAdmin ? '👑' : '👤'}</td>
+            <td>
+              <button class="btn btn-success" onclick="toggleCourse('${doc.id}', ${!data.courseActive})" style="padding:5px 10px;font-size:12px;">
+                ${data.courseActive ? 'إلغاء' : 'تفعيل'}
+              </button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+    
+    // تبديل تفعيل الكورس
+    async function toggleCourse(userId, active) {
+      await firebase.firestore().collection('users').doc(userId).update({ courseActive: active });
+      loadUsers();
+      loadStats();
+    }
+    
+    // تحميل المشاريع
+    async function loadProjects() {
+      const snapshot = await firebase.firestore().collection('projects').get();
+      const tbody = document.querySelector('#projectsTable tbody');
+      tbody.innerHTML = '';
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.title}</td>
+            <td>${data.desc}</td>
+            <td><a href="${data.link}" target="_blank">زيارة</a></td>
+            <td><button class="btn btn-danger" onclick="deleteProject('${doc.id}')" style="padding:5px 10px;font-size:12px;">حذف</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+    
+    // إضافة مشروع
+    async function addProject() {
+      const title = document.getElementById('projectTitle').value;
+      const desc = document.getElementById('projectDesc').value;
+      const link = document.getElementById('projectLink').value;
+      
+      if (title && desc && link) {
+        await firebase.firestore().collection('projects').add({ title, desc, link });
+        document.getElementById('projectTitle').value = '';
+        document.getElementById('projectDesc').value = '';
+        document.getElementById('projectLink').value = '';
+        loadProjects();
+        loadStats();
+      } else {
+        alert('املأ كل الحقول!');
+      }
+    }
+    
+    // حذف مشروع
+    async function deleteProject(id) {
+      if (confirm('متأكد من الحذف؟')) {
+        await firebase.firestore().collection('projects').doc(id).delete();
+        loadProjects();
+        loadStats();
+      }
+    }
+  </script>
+</body>
+</html>
