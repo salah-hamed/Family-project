@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Family Project</title>
+  <title>Family Business</title>
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -90,27 +90,38 @@
     const ADMIN_PASS = 'admin123';
     
     // تحميل المشاريع المحلّية
-    function loadProjects() {
-      const projects = JSON.parse(localStorage.getItem('projects')) || [
-        {title: 'تطبيق توصيل قهوة', url: '#', desc: 'تتبع الطلبات realtime بـ Firebase.'},
-        {title: 'متجر ملابس تقليدية', url: '#', desc: 'منصة تجارة إلكترونية كاملة.'},
-        {title: 'كتاب تلوين أطفال', url: '#', desc: 'حفظ الرسومات مع Firebase Storage.'}
-      ];
-      
-      let html = '';
-      projects.forEach((p, i) => {
-        html += `
-          <div class="project">
-            <h3>${p.title}</h3>
-            <p>${p.desc}</p>
-            <a href="${p.url}" target="_blank" class="btn" style="padding: 8px 20px; font-size: 0.9rem;">🌐 زيارة</a>
-            <button onclick="deleteProject(${i})" style="padding: 8px 20px; background: #e74c3c; margin-left: 10px;">🗑️ حذف</button>
-          </div>
-        `;
-      });
-      document.getElementById('projects-container').innerHTML = html;
-      document.getElementById('projects-list').innerHTML = html;
-    }
+  function loadProjects() {
+  const projects = JSON.parse(localStorage.getItem('projects')) || [
+    // ... نفس البيانات
+  ];
+  
+  let html = '';
+  projects.forEach((p, i) => {
+    // للمستخدمين العاديين: بدون زرار حذف
+    html += `
+      <div class="project">
+        <h3>${p.title}</h3>
+        <p>${p.desc}</p>
+        <a href="${p.url}" target="_blank" class="btn" style="padding: 10px 25px; font-size: 0.95rem; background: #3498db;">🌐 زيارة المشروع</a>
+      </div>
+    `;
+  });
+  document.getElementById('projects-container').innerHTML = html;
+  
+  // للأدمن فقط: مع زرار حذف
+  let adminHtml = html;
+  projects.forEach((p, i) => {
+    adminHtml += `
+      <div class="project">
+        <h3>${p.title}</h3>
+        <p>${p.desc}</p>
+        <a href="${p.url}" target="_blank" class="btn" style="padding: 8px 20px;">🌐 زيارة</a>
+        <button onclick="deleteProject(${i})" style="padding: 8px 20px; background: #e74c3c; margin-left: 10px;">🗑️ حذف</button>
+      </div>
+    `;
+  });
+  document.getElementById('projects-list').innerHTML = adminHtml;
+}
     
     function addProject() {
       const title = document.getElementById('proj-title').value.trim();
