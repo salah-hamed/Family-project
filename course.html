@@ -88,18 +88,19 @@
       .nav-btn { padding: 12px 24px; font-size: 16px; margin: 5px; }
     }
     
-    /* No Access */
-    #no-access { text-align: center; color: white; padding: 100px 20px; }
+    /* No Access & Loading */
+    #loading, #no-access { text-align: center; color: white; padding: 100px 20px; }
+    #loading { background: rgba(255,255,255,0.9); color: #333; }
   </style>
 </head>
 <body>
-  <div id="loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;">
-    جاري التحقق من الوصول...
+  <div id="loading">
+    🔍 جاري التحقق من الوصول للكورس...
   </div>
   
   <div id="no-access" style="display:none;">
-    <h1>❌ لا يوجد وصول لهذا الكورس</h1>
-    <p>يرجى شراء الكورس أو تسجيل الدخول</p>
+    <h1>❌ لا يوجد وصول للكورس</h1>
+    <p>اتصل بالأدمن للتفعيل</p>
     <a href="index.html" style="color:#FFD700;font-size:20px;">← العودة للرئيسية</a>
   </div>
   
@@ -109,33 +110,31 @@
       <p style="text-align:center;color:rgba(255,255,255,0.9);font-size:1.2rem;">بناء أعمال إلكترونية ناجحة بـ Firebase</p>
       
       <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
       </div>
       
       <div id="slides-container"></div>
       
       <div class="nav-buttons">
-        <button id="prevBtn" class="nav-btn" onclick="prevSlide()" disabled>← السابق</button>
+        <button id="prevBtn" class="nav-btn" onclick="prevSlide()" disabled>السابق ←</button>
         <button id="nextBtn" class="nav-btn" onclick="nextSlide()">التالي →</button>
         <button id="fullscreenBtn" class="nav-btn" onclick="toggleFullscreen()" style="background:linear-gradient(45deg,#667eea,#764ba2);">⛶ ملء الشاشة</button>
       </div>
-      
-      <div id="quiz-container"></div>
       
       <div id="certificate">
         <h2>🏆 شهادة إتمام الكورس</h2>
         <p id="certName">الاسم: [جاري التحميل]</p>
         <p>تم إتمام كورس Family Business بنجاح!</p>
         <p>التاريخ: <span id="certDate"></span></p>
-        <button onclick="generateCertificate()" class="nav-btn" style="background:linear-gradient(45deg,#4CAF50,#45a049);">📄 تحميل الشهادة PDF</button>
+        <button onclick="generateCertificate()" class="nav-btn" style="background:linear-gradient(45deg,#4CAF50,#45a049);">📄 تحميل PDF</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Firebase Config (من مشروعك)
+    // Firebase Config بتاعك (kidsup-e998d)
     const firebaseConfig = {
-      apiKey: "AIzaSyA9Xq5o0q0q0q0q0q0q0q0q0q0q0q0q0q0", // ضع config بتاعك هنا
+      apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
       authDomain: "kidsup-e998d.firebaseapp.com",
       projectId: "kidsup-e998d",
       storageBucket: "kidsup-e998d.firebasestorage.app",
@@ -152,34 +151,56 @@
     let userProgress = {};
     let user = null;
 
-    // محتوى الدروس (10 دروس عملية)
+    // محتوى 10 دروس (عدّل حسب احتياجك)
     const lessons = [
-      { title: "درس 1: إعداد Firebase", video: "https://www.youtube.com/embed/fgdpvwEWJ9M", content: "تعلم إعداد Firebase لمشروعك الأول..." },
-      { title: "درس 2: Authentication", video: "", content: "نظم تسجيل الدخول والصلاحيات..." },
-      { title: "درس 3: Firestore Database", video: "https://www.youtube.com/embed/N0j6Fe2vAK4", content: "بناء قاعدة بيانات NoSQL..." },
-      // أضف باقي الدروس هنا... (9 دروس إضافية عن e-commerce, payments, admin dashboard)
-      { title: "درس 10: نشر المشروع", video: "", content: "GitHub Pages + Firebase Hosting..." }
+      { title: "1. إعداد Firebase", video: "https://www.youtube.com/embed/fgdpvwEWJ9M", content: "إنشاء مشروع + config + hosting." },
+      { title: "2. Authentication", video: "", content: "تسجيل/دخول + صلاحيات." },
+      { title: "3. Firestore DB", video: "https://www.youtube.com/embed/N0j6Fe2vAK4", content: "قاعدة بيانات NoSQL + queries." },
+      { title: "4. Real-time Updates", video: "", content: "سينك فوري + listeners." },
+      { title: "5. Storage", video: "", content: "رفع/عرض صور + ملفات." },
+      { title: "6. eCommerce Basics", video: "", content: "سلة + طلبات + payments." },
+      { title: "7. Admin Dashboard", video: "", content: "إدارة users + content." },
+      { title: "8. PWA Mobile", video: "", content: "Progressive Web App." },
+      { title: "9. Security Rules", video: "", content: "حماية البيانات." },
+      { title: "10. Deploy & Scale", video: "", content: "GitHub Pages + Firebase." }
     ];
 
-    // التحقق من الوصول
+    // التحقق من courseActive (زي القديم)
     auth.onAuthStateChanged(async (u) => {
+      const loadingEl = document.getElementById('loading');
+      loadingEl.innerHTML += `<p>🔍 UID: <strong>${u?.uid || 'غير مسجل'}</strong></p>`;
+      
       if (u) {
         user = u;
-        const userDoc = await db.collection('users').doc(u.uid).get();
-        if (userDoc.exists && userDoc.data().courseAccess) {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('course-content').style.display = 'block';
-          loadProgress();
-          initSlides();
-        } else {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('no-access').style.display = 'block';
+        try {
+          const userDoc = await db.collection('users').doc(u.uid).get();
+          const userData = userDoc.data();
+          console.log('📄 User Doc كامل:', userData);
+          loadingEl.innerHTML += `<p>courseActive: <strong>${userData?.courseActive ? '✅ مفعّل' : '❌ غير مفعّل'}</strong></p>`;
+          
+          if (userDoc.exists && userData?.courseActive) {
+            loadingEl.style.display = 'none';
+            document.getElementById('course-content').style.display = 'block';
+            loadProgress();
+            initSlides();
+          } else {
+            loadingEl.style.display = 'none';
+            document.getElementById('no-access').style.display = 'block';
+            document.getElementById('no-access').innerHTML += `
+              <p><strong>courseActive:</strong> ${userData?.courseActive || 'غير موجود'}</p>
+              <p>📞 اتصل بالأدمن للتفعيل</p>
+            `;
+          }
+        } catch (error) {
+          console.error('🚨 Firestore خطأ:', error);
+          loadingEl.innerHTML += `<p style="color:red;">خطأ: ${error.message}</p>`;
         }
       } else {
         window.location = 'login.html';
       }
     });
 
+    // باقي الدوال
     async function loadProgress() {
       const progressDoc = await db.collection('users').doc(user.uid).collection('progress').doc('family-business').get();
       userProgress = progressDoc.exists ? progressDoc.data() : {};
@@ -192,8 +213,8 @@
     }
 
     function updateProgressBar() {
-      const completed = Object.values(userProgress).filter(p => p.completed).length;
-      const progress = (completed / totalSlides) * 100;
+      const completed = Object.values(userProgress).filter(p => p?.completed).length;
+      const progress = Math.min((completed / totalSlides) * 100, 100);
       document.getElementById('progressBar').style.width = progress + '%';
     }
 
@@ -202,12 +223,15 @@
       lessons.forEach((lesson, index) => {
         const slide = document.createElement('div');
         slide.className = 'slide';
+        slide.id = `slide-${index}`;
         slide.innerHTML = `
           <div class="slide-content">
             <h2>${lesson.title}</h2>
-            ${lesson.video ? `<div class="youtube-container"><iframe src="${lesson.video}" frameborder="0" allowfullscreen></iframe></div>` : ''}
+            ${lesson.video ? `<div class="youtube-container"><iframe src="${lesson.video}?rel=0" frameborder="0" allowfullscreen></iframe></div>` : ''}
             <p>${lesson.content}</p>
-            <button onclick="completeLesson(${index})" style="background:#4CAF50;color:white;padding:10px 20px;border:none;border-radius:10px;">✅ تم الإتمام</button>
+            <div style="margin-top:20px;">
+              <button onclick="completeLesson(${index})" class="nav-btn" style="width:200px;">✅ إتمام الدرس</button>
+            </div>
           </div>
         `;
         container.appendChild(slide);
@@ -216,64 +240,44 @@
     }
 
     function showSlide(index) {
-      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.slide')[index].classList.add('active');
+      document.querySelectorAll('.slide').forEach((s, i) => {
+        s.classList.toggle('active', i === index);
+      });
       currentSlide = index;
-      
       document.getElementById('prevBtn').disabled = index === 0;
       document.getElementById('nextBtn').disabled = index === totalSlides - 1;
       
-      // تحقق إذا كان quiz أو certificate
       if (index === totalSlides - 1) {
         document.getElementById('certificate').style.display = 'block';
+        document.getElementById('certName').textContent = `الاسم: ${user?.email || 'المستخدم'}`;
+        document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar-EG');
       }
     }
 
-    function nextSlide() {
-      if (currentSlide < totalSlides - 1) {
-        currentSlide++;
-        showSlide(currentSlide);
-      }
-    }
-
-    function prevSlide() {
-      if (currentSlide > 0) {
-        currentSlide--;
-        showSlide(currentSlide);
-      }
-    }
+    function nextSlide() { if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1); }
+    function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
 
     async function completeLesson(index) {
-      userProgress[index] = { ...userProgress[index], completed: true, date: new Date().toISOString() };
-      await saveProgress();
-      alert('تم حفظ التقدم! 🎉');
+      if (!userProgress[index]?.completed) {
+        userProgress[index] = { completed: true, date: new Date().toISOString() };
+        await saveProgress();
+        alert('✅ تم حفظ تقدم الدرس!');
+      }
     }
 
     function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
     }
 
     async function generateCertificate() {
-      const certName = document.getElementById('certName');
-      certName.textContent = `الاسم: ${user.email}`;
-      document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar');
-      
-      const certificateEl = document.getElementById('certificate');
-      certificateEl.style.display = 'block';
-      
-      html2canvas(certificateEl).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new window.jspdf.jsPDF();
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`شهادة-FamilyBusiness-${user.uid}.pdf`);
-      });
+      const canvas = await html2canvas(document.getElementById('certificate'));
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`شهادة-FamilyBusiness-${user.uid.substring(0,8)}.pdf`);
     }
   </script>
 </body>
