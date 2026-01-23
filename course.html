@@ -15,6 +15,7 @@
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; color: white; font-size: 24px; flex-direction: column; gap: 10px; }
     .loading.hidden { display: none; }
+    .error-msg { background: #ff4444; color: white; padding: 20px; border-radius: 10px; margin: 20px; text-align: center; }
     .course-header { text-align: center; color: white; margin-bottom: 40px; animation: fadeIn 1s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.3); border-radius: 5px; margin: 20px 0; overflow: hidden; }
@@ -85,96 +86,47 @@
     const totalLessons = 10;
 
     const lessons = [
-      { 
-        title: "الدرس 1: إعداد Firebase Console", 
-        content: "1. روح Firebase Console، أنشئ project جديد FamilyBusiness. 2. فعّل Auth + Firestore. 3. Copy config ولصقه في الكود.",
-        code: "firebase.initializeApp(firebaseConfig);
+      { title: "الدرس 1: إعداد Firebase Console", content: "1. روح Firebase Console، أنشئ project جديد FamilyBusiness. 2. فعّل Auth + Firestore. 3. Copy config ولصقه في الكود.", code: "firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore();" 
-      },
-      { 
-        title: "الدرس 2: صفحة Login بـ Auth", 
-        content: "استخدم email/password auth مع RTL design. أنشئ صفحة login.html مع form كامل.",
-        code: "firebase.auth().createUserWithEmailAndPassword(email, password)
+const db = firebase.firestore();" },
+      { title: "الدرس 2: صفحة Login بـ Auth", content: "استخدم email/password auth مع RTL design. أنشئ صفحة login.html مع form كامل.", code: "firebase.auth().createUserWithEmailAndPassword(email, password)
   .then((userCredential) => {
     console.log('تسجيل ناجح');
   })
   .catch((error) => {
     console.log(error.message);
-  });" 
-      },
-      { 
-        title: "الدرس 3: قاعدة بيانات Firestore", 
-        content: "صمم collections: users, products, orders, merchants.",
-        code: "db.collection('products').add({
+  });" },
+      { title: "الدرس 3: قاعدة بيانات Firestore", content: "صمم collections: users, products, orders, merchants.", code: "db.collection('products').add({
   name: 'منتج1',
   price: 100,
   image: 'url',
   merchantId: 'merchant123'
-});" 
-      },
-      { 
-        title: "الدرس 4: صفحة المنتجات", 
-        content: "اعرض المنتجات من Firestore مع search و filters.",
-        code: "db.collection('products').get().then(snapshot => {
+});" },
+      { title: "الدرس 4: صفحة المنتجات", content: "اعرض المنتجات من Firestore مع search و filters.", code: "db.collection('products').get().then(snapshot => {
   snapshot.forEach(doc => {
     console.log(doc.data());
   });
-});" 
-      },
-      { 
-        title: "الدرس 5: سلة المشتريات", 
-        content: "أضف/remove من السلة مع localStorage backup.",
-        code: "let cartItems = [];
+});" },
+      { title: "الدرس 5: سلة المشتريات", content: "أضف/remove من السلة مع localStorage backup.", code: "let cartItems = [];
 cartItems.push(product);
-localStorage.setItem('cart', JSON.stringify(cartItems));" 
-      },
-      { 
-        title: "الدرس 6: Checkout + Payments", 
-        content: "استخدم Fawry أو Paymob للدفع المحلي.",
-        code: "// مثال Fawry أو Paymob SDK
-window.paymob = { /* config */ };"
-      },
-      { 
-        title: "الدرس 7: لوحة تحكم التاجر", 
-        content: "Dashboard للتاجر يضيف/يعدل المنتجات.",
-        code: "if (user.role === 'merchant') {
-  // عرض dashboard
+localStorage.setItem('cart', JSON.stringify(cartItems));" },
+      { title: "الدرس 6: Checkout + Payments", content: "استخدم Fawry أو Paymob للدفع المحلي.", code: "window.paymob = { /* config */ };" },
+      { title: "الدرس 7: لوحة تحكم التاجر", content: "Dashboard للتاجر يضيف/يعدل المنتجات.", code: "if (user.role === 'merchant') {
   loadMerchantProducts();
-}" 
-      },
-      { 
-        title: "الدرس 8: تتبع الطلبات Real-time", 
-        content: "استخدم Firestore listeners للتحديثات الفورية.",
-        code: "db.collection('orders').where('status', '==', 'pending')
+}" },
+      { title: "الدرس 8: تتبع الطلبات Real-time", content: "استخدم Firestore listeners للتحديثات الفورية.", code: "db.collection('orders').where('status', '==', 'pending')
   .onSnapshot(snapshot => {
     updateOrdersUI(snapshot);
-  });" 
-      },
-      { 
-        title: "الدرس 9: Admin Panel", 
-        content: "لوحة تحكم الأدمن لإدارة المستخدمين والطلبات.",
-        code: "rules_version = '2';
+  });" },
+      { title: "الدرس 9: Admin Panel", content: "لوحة تحكم الأدمن لإدارة المستخدمين والطلبات.", code: "rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
-}" 
-      },
-      { 
-        title: "الدرس 10: Deployment + Monetization", 
-        content: "نشر على Firebase Hosting + إعداد Stripe subscriptions.",
-        code: "// firebase.json
-{
-  "hosting": {
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-  }
-}
-firebase deploy;" 
-      }
+}" },
+      { title: "الدرس 10: Deployment + Monetization", content: "نشر على Firebase Hosting + إعداد Stripe subscriptions.", code: "firebase deploy;" }
     ];
 
     window.onload = async () => {
@@ -184,41 +136,77 @@ firebase deploy;"
       status.textContent = 'التحقق من تسجيل الدخول...';
       
       auth.onAuthStateChanged(async (user) => {
+        console.log('Auth state changed:', user ? user.uid : 'No user');
+        
         if (!user) {
           status.textContent = 'غير مسجل دخول';
           setTimeout(() => {
             alert('سجّل دخول أولاً من login.html');
             window.location.href = 'login.html';
-          }, 1000);
+          }, 1500);
           return;
         }
 
         currentUser = user;
-        status.textContent = 'التحقق من courseActive في Firestore...';
+        status.textContent = 'التحقق من بيانات المستخدم...';
         
         try {
+          console.log('جاري قراءة document:', user.uid);
           const doc = await db.collection('users').doc(user.uid).get();
-          if (doc.exists && doc.data().courseActive) {
-            currentLesson = doc.data().currentLesson || 0;
-            loading.classList.add('hidden');
-            document.getElementById('courseContent').style.display = 'block';
-            initCourse();
+          
+          console.log('Document exists:', doc.exists);
+          console.log('Document data:', doc.data());
+          
+          if (doc.exists) {
+            const userData = doc.data();
+            if (userData.courseActive) {
+              currentLesson = userData.currentLesson || 0;
+              loading.classList.add('hidden');
+              document.getElementById('courseContent').style.display = 'block';
+              initCourse();
+              return;
+            } else {
+              throw new Error('courseActive = false');
+            }
           } else {
-            status.textContent = 'الكورس غير مفعّل';
-            setTimeout(() => {
-              alert('الكورس غير مفعّل. تواصل مع الأدمن بعد الدفع.');
-              auth.signOut();
-            }, 1000);
+            // إنشاء document جديد للمستخدم الجديد
+            await db.collection('users').doc(user.uid).set({
+              email: user.email,
+              courseActive: false, // غير مفعل حتى الدفع
+              currentLesson: 0,
+              enrolledDate: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            throw new Error('الكورس غير مفعل. أضف courseActive: true في Firestore');
           }
         } catch (error) {
-          console.error('Firestore error:', error);
-          status.textContent = 'خطأ في Firestore';
-          setTimeout(() => {
-            alert('خطأ في Firestore. تأكد من الصلاحيات.');
-          }, 1000);
+          console.error('Firestore error details:', error);
+          
+          // عرض تفاصيل الخطأ
+          if (error.code === 'permission-denied') {
+            showError(`خطأ صلاحيات: ${error.message}
+
+🔧 الحل:
+1. Firebase Console → Firestore → Rules
+2. الصق الـ rules أعلاه
+3. اضغط Publish`);
+          } else if (error.message.includes('courseActive')) {
+            showError(`الكورس غير مفعل لك
+
+🔧 الحل:
+1. Firebase Console → Firestore → users/${user.uid}
+2. أضف courseActive: true`);
+          } else {
+            showError(`خطأ: ${error.message}
+Console: F12 → Console لرؤية التفاصيل`);
+          }
         }
       });
     };
+
+    function showError(message) {
+      const loading = document.getElementById('loading');
+      loading.innerHTML = `<div class="error-msg">${message}</div>`;
+    }
 
     function initCourse() {
       loadLessons();
@@ -250,8 +238,7 @@ firebase deploy;"
       
       if (currentUser) {
         db.collection('users').doc(currentUser.uid).update({ 
-          currentLesson: currentLesson,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          currentLesson: currentLesson
         }).catch(console.error);
       }
     }
@@ -290,28 +277,23 @@ firebase deploy;"
 
     function setupCertificate() {
       document.getElementById('certificateBtn').onclick = async () => {
-        if (currentLesson + 1 === totalLessons) {
-          try {
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.setFontSize(20);
-            pdf.text('شهادة إكمال كورس Family Business', 105, 30, { align: 'center' });
-            pdf.setFontSize(14);
-            pdf.text(`الاسم: ${currentUser.email}`, 105, 50, { align: 'center' });
-            pdf.text(`التاريخ: ${new Date().toLocaleDateString('ar-EG')}`, 105, 60, { align: 'center' });
-            
-            const headerCanvas = await html2canvas(document.querySelector('.course-header'), {
-              scale: 2,
-              useCORS: true
-            });
-            const imgData = headerCanvas.toDataURL('image/png');
-            pdf.addImage(imgData, 'PNG', 20, 80, 170, 80);
-            
-            pdf.save(`شهادة-FamilyBusiness-${currentUser.uid.slice(0,8)}.pdf`);
-            alert('تم حفظ الشهادة! 🎉');
-          } catch (error) {
-            console.error('Certificate error:', error);
-            alert('حدث خطأ في إنشاء الشهادة');
-          }
+        try {
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          pdf.setFontSize(20);
+          pdf.text('شهادة إكمال كورس Family Business', 105, 30, { align: 'center' });
+          pdf.setFontSize(14);
+          pdf.text(`الاسم: ${currentUser.email}`, 105, 50, { align: 'center' });
+          pdf.text(`التاريخ: ${new Date().toLocaleDateString('ar-EG')}`, 105, 60, { align: 'center' });
+          
+          const headerCanvas = await html2canvas(document.querySelector('.course-header'));
+          const imgData = headerCanvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 20, 80, 170, 80);
+          
+          pdf.save(`شهادة-FamilyBusiness-${currentUser.uid.slice(0,8)}.pdf`);
+          alert('تم حفظ الشهادة! 🎉');
+        } catch (error) {
+          console.error('Certificate error:', error);
+          alert('حدث خطأ في إنشاء الشهادة');
         }
       };
     }
