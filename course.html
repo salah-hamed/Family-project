@@ -2,28 +2,196 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الكورس - Family Project</title>
+  
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <style> /* ستايل مبهج مع انيميشنز */ .slide { padding: 40px; text-align: center; animation: fadeIn 1s; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } </style>
+  <script src="app.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', system-ui, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: white; 
+      overflow-x: hidden; 
+    }
+    .welcome-screen, .no-access { 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      text-align: center; 
+      padding: 40px; 
+    }
+    .welcome-screen h1 { font-size: 3.5rem; margin-bottom: 20px; animation: glow 2s ease-in-out infinite alternate; }
+    @keyframes glow { from { text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #00d4ff; } to { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00d4ff; } }
+    .btn { 
+      padding: 15px 40px; 
+      background: linear-gradient(45deg, #FF6B35, #F7931E); 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 50px; 
+      font-size: 1.2rem; 
+      margin: 10px; 
+      display: inline-block; 
+      transition: all 0.3s; 
+    }
+    .btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .course-container { display: none; min-height: 100vh; }
+    .nav { 
+      position: fixed; 
+      bottom: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: rgba(0,0,0,0.8); 
+      padding: 15px 30px; 
+      border-radius: 50px; 
+      display: flex; 
+      gap: 20px; 
+      z-index: 100; 
+    }
+    .nav-btn { 
+      background: linear-gradient(45deg, #00C851, #00A859); 
+      border: none; 
+      color: white; 
+      padding: 12px 25px; 
+      border-radius: 30px; 
+      cursor: pointer; 
+      font-size: 1rem; 
+      transition: all 0.3s; 
+    }
+    .nav-btn:hover { transform: scale(1.1); }
+    .slide { 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      text-align: center; 
+      padding: 40px; 
+      opacity: 0; 
+      transform: translateY(50px); 
+      transition: all 0.8s ease; 
+    }
+    .slide.active { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+    .slide h1 { font-size: 3rem; margin-bottom: 25px; }
+    .slide p { font-size: 1.4rem; max-width: 800px; line-height: 1.6; margin-bottom: 20px; }
+    .slide a { color: #FFD700; text-decoration: none; font-weight: bold; }
+    #slide-counter { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 25px; font-weight: bold; }
+  </style>
 </head>
 <body>
-  <div id="course-content" style="display:none;">
-    <!-- محتوى الكورس هنا: خطوات بناء مواقع بـ Firebase، AI، إلخ. أضف slides كثيرة -->
-    <div class="slide"><h1>الدرس 1: إعداد Firebase</h1><p>خطوة بخطوة...</p></div>
-    <!-- أكثر من 20 slide بناءً على السابق -->
+  <!-- شاشة الترحيب -->
+  <div id="welcome-screen" class="welcome-screen">
+    <h1>🎉 مرحباً بك في الكورس!</h1>
+    <p>الكورس محمي، سيتم التحقق من صلاحياتك...</p>
   </div>
-  <div id="no-access">الكورس غير مفعّل. أرسل إيميلك بعد الدفع.</div>
-  <script src="app.js"></script>
+
+  <!-- رسالة عدم الصلاحية -->
+  <div id="no-access" class="no-access" style="display: none;">
+    <h1>🔒 الكورس غير مفعّل</h1>
+    <p>لديك حساب لكن الكورس غير مفعّل. أرسل إيميلك للأدمن بعد الدفع.</p>
+    <a href="index.html" class="btn">العودة للرئيسية</a>
+    <a href="admin.html" class="btn">تواصل مع الأدمن</a>
+  </div>
+
+  <!-- محتوى الكورس -->
+  <div id="course-container" class="course-container">
+    <!-- الشرائح -->
+    <div class="slide active" id="slide0">
+      <h1>🚀 مرحباً بك في Family Project!</h1>
+      <p>هتتعلم بناء مواقع كاملة في ساعة واحدة بدون برمجة سنين.<br>ابدأ الآن مع الخطوة الأولى! 👇</p>
+    </div>
+    
+    <div class="slide" id="slide1">
+      <h1>🎯 الخطوة 1: فكرة المشروع</h1>
+      <p>حدد فكرتك الأولى: تطبيق توصيل، متجر إلكتروني، أو أي شيء تفكر فيه.<br>المهم إنها تكون بسيطة وواضحة.</p>
+    </div>
+    
+    <div class="slide" id="slide2">
+      <h1>🧠 الخطوة 2: Perplexity.ai</h1>
+      <p>روح <a href="https://perplexity.ai" target="_blank">perplexity.ai</a><br>
+      اكتب: "بني لي موقع [فكرتك] بـ HTML CSS JS Firebase"</p>
+    </div>
+    
+    <div class="slide" id="slide3">
+      <h1>💻 الخطوة 3: OneCompiler</h1>
+      <p>انسخ الكود من Perplexity.<br>
+      روح <a href="https://onecompiler.com/html" target="_blank">onecompiler.com/html</a><br>
+      الصق الكود واضغط Run!</p>
+    </div>
+    
+    <!-- أضف المزيد من الشرائح هنا حسب الحاجة -->
+    <div class="slide" id="slide19">
+      <h1>🎊 مبروك! خلصت الكورس</h1>
+      <p>موقعك لايف دلوقتي على GitHub Pages.<br>
+      علم أولادك وأهلك الخطوات دي! 👨‍👩‍👧‍👦<br>
+      شارك رابط موقعك معانا.</p>
+    </div>
+  </div>
+
+  <!-- التنقل -->
+  <div class="nav" id="nav" style="display: none;">
+    <button class="nav-btn" onclick="prevSlide()">السابق</button>
+    <div id="slide-counter">1 / 20</div>
+    <button class="nav-btn" onclick="nextSlide()">التالي</button>
+  </div>
+
   <script>
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const doc = await getDoc(doc(db, 'users', user.uid));
-        if (doc.exists() && doc.data().courseAccess) document.getElementById('course-content').style.display = 'block';
-        else document.getElementById('no-access').style.display = 'block';
-      } else window.location = 'login.html';
+    let currentSlide = 0;
+    const totalSlides = 20; // عدّل حسب عدد الشرائح
+
+    // التحقق من صلاحية الدخول
+    fpOnAuthStateChanged(async (user, hasAccess) => {
+      if (!user) {
+        document.getElementById('welcome-screen').innerHTML = `
+          <h1>🔐 يرجى تسجيل الدخول</h1>
+          <p>للدخول للكورس، اضغط على زر ابدأ الكورس من الصفحة الرئيسية</p>
+          <a href="login.html" class="btn">تسجيل الدخول</a>
+          <a href="index.html" class="btn">العودة للرئيسية</a>
+        `;
+        return;
+      }
+      
+      if (hasAccess) {
+        // المستخدم مفعّل له الكورس
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('course-container').style.display = 'block';
+        document.getElementById('nav').style.display = 'flex';
+        startSlideshow();
+      } else {
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('no-access').style.display = 'flex';
+      }
     });
+
+    function startSlideshow() {
+      showSlide(currentSlide);
+    }
+
+    function showSlide(n) {
+      document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+      document.getElementById(`slide${n}`).classList.add('active');
+      document.getElementById('slide-counter').textContent = `${n + 1} / ${totalSlides}`;
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      showSlide(currentSlide);
+    }
   </script>
 </body>
 </html>
