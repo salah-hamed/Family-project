@@ -1,19 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<!-- ستايل مشابه -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الأدمن - Family Project</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: system-ui, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 20px; 
+      color: white; 
+    }
+    .container { 
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(10px); 
+      border-radius: 20px; 
+      padding: 40px; 
+      max-width: 500px; 
+      width: 100%; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+    }
+    h1 { font-size: 2.5rem; margin-bottom: 30px; text-align: center; }
+    input { 
+      width: 100%; 
+      padding: 15px; 
+      margin-bottom: 20px; 
+      border: none; 
+      border-radius: 12px; 
+      font-size: 1.1rem; 
+      background: rgba(255,255,255,0.9); 
+      direction: ltr; 
+    }
+    .btn { 
+      width: 100%; 
+      padding: 15px; 
+      background: linear-gradient(45deg, #FF6B35, #F7931E); 
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      font-size: 1.2rem; 
+      cursor: pointer; 
+      transition: transform 0.3s; 
+    }
+    .btn:hover { transform: scale(1.02); }
+    .btn:active { transform: scale(0.98); }
+    .status { 
+      margin-top: 20px; 
+      padding: 15px; 
+      border-radius: 10px; 
+      text-align: center; 
+      font-weight: bold; 
+    }
+    .success { background: rgba(0,200,80,0.3); }
+    .error { background: rgba(255,80,80,0.3); }
+    .loading { background: rgba(255,193,7,0.3); }
+  </style>
+</head>
 <body>
-  <h1>لوحة الأدمن</h1>
-  <input id="userEmail" placeholder="إيميل المستخدم">
-  <button onclick="activateCourse()">تفعيل الكورس</button>
-  <script src="app.js"></script>
+  <div class="container">
+    <h1>🔧 لوحة الأدمن</h1>
+    
+    <input type="email" id="userEmail" placeholder="إيميل العميل (مثال: test@example.com)">
+    
+    <button class="btn" onclick="activateCourse()">✅ تفعيل الكورس</button>
+    
+    <div id="status"></div>
+    
+    <hr style="margin: 30px 0; border: none; height: 1px; background: rgba(255,255,255,0.3);">
+    
+    <p style="font-size: 0.9rem; opacity: 0.8;">
+      بعد التفعيل، العميل هيقدر يفتح <a href="course.html" style="color: #FFD700;">course.html</a>
+    </p>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="app-fp.js"></script>
+
   <script>
-    function activateCourse() {
-      const email = document.getElementById('userEmail').value;
-      // ابحث عن اليوزر وفعّل
-      getUserByEmail(email).then(user => {
-        if (user) updateDoc(doc(db, 'users', user.uid), { courseAccess: true });
-        alert('تم التفعيل!');
-      });
+    // تفعيل الكورس للعميل
+    async function activateCourse() {
+      const email = document.getElementById('userEmail').value.trim();
+      if (!email) {
+        showStatus('أدخل إيميل العميل أولاً', 'error');
+        return;
+      }
+      
+      const statusEl = document.getElementById('status');
+      statusEl.innerHTML = '<div class="status loading">جاري البحث والتفعيل...</div>';
+      
+      try {
+        // استخدام الدالة من app-fp.js
+        await fpActivateCourseByEmail(email);
+        statusEl.innerHTML = `<div class="status success">✅ تم تفعيل الكورس لـ <strong>${email}</strong><br>العميل يقدر يفتح course.html دلوقتي!</div>`;
+      } catch (error) {
+        statusEl.innerHTML = `<div class="status error">❌ خطأ: ${error.message}</div>`;
+      }
+    }
+    
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('status');
+      statusEl.innerHTML = `<div class="status ${type}">${message}</div>`;
+      setTimeout(() => statusEl.innerHTML = '', 5000);
     }
   </script>
 </body>
