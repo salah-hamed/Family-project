@@ -3,113 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة الأدمن - Family Project</title>
+  <title>داشبورد الأدمن - Family Project</title>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="app.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: system-ui, sans-serif; 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-      min-height: 100vh; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 20px; 
-      color: white; 
-    }
-    .container { 
-      background: rgba(255,255,255,0.1); 
-      backdrop-filter: blur(10px); 
-      border-radius: 20px; 
-      padding: 40px; 
-      max-width: 500px; 
-      width: 100%; 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
-    }
-    h1 { font-size: 2.5rem; margin-bottom: 30px; text-align: center; }
-    input { 
-      width: 100%; 
-      padding: 15px; 
-      margin-bottom: 20px; 
-      border: none; 
-      border-radius: 12px; 
-      font-size: 1.1rem; 
-      background: rgba(255,255,255,0.9); 
-      direction: ltr; 
-    }
-    .btn { 
-      width: 100%; 
-      padding: 15px; 
-      background: linear-gradient(45deg, #FF6B35, #F7931E); 
-      color: white; 
-      border: none; 
-      border-radius: 12px; 
-      font-size: 1.2rem; 
-      cursor: pointer; 
-      transition: transform 0.3s; 
-    }
-    .btn:hover { transform: scale(1.02); }
-    .btn:active { transform: scale(0.98); }
-    .status { 
-      margin-top: 20px; 
-      padding: 15px; 
-      border-radius: 10px; 
-      text-align: center; 
-      font-weight: bold; 
-    }
-    .success { background: rgba(0,200,80,0.3); }
-    .error { background: rgba(255,80,80,0.3); }
-    .loading { background: rgba(255,193,7,0.3); }
+    /* نفس ستايل الـ admin اللي عملناه قبل كده */
+    body { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; font-family: system-ui; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .container { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 25px; padding: 40px; max-width: 600px; width: 100%; }
+    .admin-login { text-align: center; }
+    input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 12px; border: none; font-size: 1.1rem; }
+    .btn { width: 100%; padding: 15px; background: linear-gradient(45deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 12px; font-size: 1.2rem; cursor: pointer; margin-top: 10px; }
+    .dashboard { display: none; }
+    .user-list { margin-top: 30px; }
+    .user-item { background: rgba(255,255,255,0.1); padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .activate-btn { background: #27ae60; padding: 8px 15px; border-radius: 20px; border: none; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🔧 لوحة الأدمن</h1>
+    <!-- شاشة تسجيل الدخول للأدمن -->
+    <div id="admin-login" class="admin-login">
+      <h1>🔐 داشبورد الأدمن</h1>
+      <p>تسجيل الدخول كأدمن</p>
+      <input type="email" id="admin-email" placeholder="إيميل الأدمن">
+      <input type="password" id="admin-password" placeholder="كلمة السر">
+      <button class="btn" onclick="adminLogin()">دخول الأدمن</button>
+      <p style="margin-top: 20px; opacity: 0.8;">
+        <a href="index.html">← العودة للرئيسية</a>
+      </p>
+    </div>
     
-    <input type="email" id="userEmail" placeholder="إيميل العميل (مثال: test@example.com)">
-    
-    <button class="btn" onclick="activateCourse()">✅ تفعيل الكورس</button>
-    
-    <div id="status"></div>
-    
-    <hr style="margin: 30px 0; border: none; height: 1px; background: rgba(255,255,255,0.3);">
-    
-    <p style="font-size: 0.9rem; opacity: 0.8;">
-      بعد التفعيل، العميل هيقدر يفتح <a href="course.html" style="color: #FFD700;">course.html</a>
-    </p>
+    <!-- داشبورد الأدمن -->
+    <div id="admin-dashboard" class="dashboard">
+      <h1>⚙️ لوحة تحكم الأدمن</h1>
+      <p>مرحباً <span id="admin-name"></span> | <button class="btn" onclick="adminLogout()" style="width: auto; padding: 10px 20px; margin-left: 20px;">خروج</button></p>
+      
+      <h3>🎯 تفعيل كورس لعملاء جدد</h3>
+      <input type="email" id="new-user-email" placeholder="إيميل العميل الجديد">
+      <button class="btn" onclick="activateNewUser()">تفعيل الكورس</button>
+      
+      <div class="user-list" id="users-list">
+        <!-- قائمة المستخدمين هتتحمّل هنا -->
+      </div>
+    </div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="app-fp.js"></script>
-
   <script>
-    // تفعيل الكورس للعميل
-    async function activateCourse() {
-      const email = document.getElementById('userEmail').value.trim();
-      if (!email) {
-        showStatus('أدخل إيميل العميل أولاً', 'error');
+    const ADMIN_EMAIL = 'admin@familyproject.com'; // غيّرها لإيميلك الحقيقي
+    const ADMIN_PASSWORD = 'admin123'; // غيّرها
+    
+    async function adminLogin() {
+      const email = document.getElementById('admin-email').value;
+      const password = document.getElementById('admin-password').value;
+      
+      if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+        alert('إيميل أو كلمة سر الأدمن خاطئة!');
         return;
       }
       
-      const statusEl = document.getElementById('status');
-      statusEl.innerHTML = '<div class="status loading">جاري البحث والتفعيل...</div>';
-      
       try {
-        // استخدام الدالة من app-fp.js
-        await fpActivateCourseByEmail(email);
-        statusEl.innerHTML = `<div class="status success">✅ تم تفعيل الكورس لـ <strong>${email}</strong><br>العميل يقدر يفتح course.html دلوقتي!</div>`;
+        await window.fpSignIn(email, password);
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+        document.getElementById('admin-name').textContent = email;
+        loadUsers();
       } catch (error) {
-        statusEl.innerHTML = `<div class="status error">❌ خطأ: ${error.message}</div>`;
+        alert('خطأ: ' + error.message);
       }
     }
     
-    function showStatus(message, type) {
-      const statusEl = document.getElementById('status');
-      statusEl.innerHTML = `<div class="status ${type}">${message}</div>`;
-      setTimeout(() => statusEl.innerHTML = '', 5000);
+    async function adminLogout() {
+      await window.fpSignOut();
+      location.reload();
     }
-  </script>
-</body>
-</html>
+    
+    async function activateNewUser()
