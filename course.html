@@ -3,194 +3,277 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الكورس - Family Project</title>
+  <title>الكورس - Family Business</title>
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="app.js"></script>
+  
+  <!-- jsPDF + html2canvas للشهادة -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
-      font-family: 'Segoe UI', system-ui, sans-serif; 
+      font-family: 'Segoe UI', Tahoma, sans-serif; 
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-      color: white; 
-      overflow-x: hidden; 
+      min-height: 100vh; 
+      color: #333; 
+      overflow-x: hidden;
     }
-    .welcome-screen, .no-access { 
-      height: 100vh; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center; 
-      text-align: center; 
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    /* Progress Bar */
+    .progress-container { 
+      background: rgba(255,255,255,0.9); 
+      border-radius: 50px; 
+      padding: 5px; 
+      margin-bottom: 30px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .progress-bar { 
+      height: 20px; 
+      background: linear-gradient(90deg, #4CAF50, #45a049); 
+      border-radius: 50px; 
+      transition: width 0.5s ease; 
+    }
+    
+    /* Slides */
+    .slide { display: none; animation: slideIn 0.5s ease; }
+    .slide.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    
+    .slide-content { 
+      background: white; 
+      border-radius: 20px; 
       padding: 40px; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+      margin-bottom: 30px;
     }
-    .welcome-screen h1 { font-size: 3.5rem; margin-bottom: 20px; animation: glow 2s ease-in-out infinite alternate; }
-    @keyframes glow { from { text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #00d4ff; } to { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00d4ff; } }
-    .btn { 
-      padding: 15px 40px; 
-      background: linear-gradient(45deg, #FF6B35, #F7931E); 
-      color: white; 
-      text-decoration: none; 
-      border-radius: 50px; 
-      font-size: 1.2rem; 
-      margin: 10px; 
-      display: inline-block; 
-      transition: all 0.3s; 
-    }
-    .btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    .course-container { display: none; min-height: 100vh; }
-    .nav { 
-      position: fixed; 
-      bottom: 20px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      background: rgba(0,0,0,0.8); 
-      padding: 15px 30px; 
-      border-radius: 50px; 
-      display: flex; 
-      gap: 20px; 
-      z-index: 100; 
-    }
+    .youtube-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; }
+    .youtube-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    
+    /* Navigation */
+    .nav-buttons { text-align: center; }
     .nav-btn { 
-      background: linear-gradient(45deg, #00C851, #00A859); 
-      border: none; 
+      background: linear-gradient(45deg, #FF6B6B, #4ECDC4); 
       color: white; 
-      padding: 12px 25px; 
-      border-radius: 30px; 
+      border: none; 
+      padding: 15px 30px; 
+      margin: 0 10px; 
+      border-radius: 50px; 
+      font-size: 18px; 
       cursor: pointer; 
-      font-size: 1rem; 
-      transition: all 0.3s; 
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    .nav-btn:hover { transform: scale(1.1); }
-    .slide { 
-      height: 100vh; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center; 
-      text-align: center; 
-      padding: 40px; 
-      opacity: 0; 
-      transform: translateY(50px); 
-      transition: all 0.8s ease; 
+    .nav-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    
+    /* Quiz */
+    .quiz { display: none; }
+    .quiz.active { display: block; }
+    .quiz-options button { display: block; width: 100%; margin: 10px 0; padding: 15px; background: #f0f0f0; border: none; border-radius: 10px; cursor: pointer; }
+    .quiz-options button:hover { background: #e0e0e0; }
+    .quiz-options button.correct { background: #4CAF50; color: white; }
+    .quiz-options button.incorrect { background: #f44336; color: white; }
+    
+    /* Certificate */
+    #certificate { display: none; background: #FFD700; padding: 50px; border-radius: 20px; text-align: center; font-size: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    
+    /* Mobile */
+    @media (max-width: 768px) { 
+      .slide-content { padding: 20px; } 
+      .nav-btn { padding: 12px 24px; font-size: 16px; margin: 5px; }
     }
-    .slide.active { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
-    .slide h1 { font-size: 3rem; margin-bottom: 25px; }
-    .slide p { font-size: 1.4rem; max-width: 800px; line-height: 1.6; margin-bottom: 20px; }
-    .slide a { color: #FFD700; text-decoration: none; font-weight: bold; }
-    #slide-counter { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 25px; font-weight: bold; }
+    
+    /* No Access */
+    #no-access { text-align: center; color: white; padding: 100px 20px; }
   </style>
 </head>
 <body>
-  <!-- شاشة الترحيب -->
-  <div id="welcome-screen" class="welcome-screen">
-    <h1>🎉 مرحباً بك في الكورس!</h1>
-    <p>الكورس محمي، سيتم التحقق من صلاحياتك...</p>
+  <div id="loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;">
+    جاري التحقق من الوصول...
   </div>
-
-  <!-- رسالة عدم الصلاحية -->
-  <div id="no-access" class="no-access" style="display: none;">
-    <h1>🔒 الكورس غير مفعّل</h1>
-    <p>لديك حساب لكن الكورس غير مفعّل. أرسل إيميلك للأدمن بعد الدفع.</p>
-    <a href="index.html" class="btn">العودة للرئيسية</a>
-    <a href="admin.html" class="btn">تواصل مع الأدمن</a>
+  
+  <div id="no-access" style="display:none;">
+    <h1>❌ لا يوجد وصول لهذا الكورس</h1>
+    <p>يرجى شراء الكورس أو تسجيل الدخول</p>
+    <a href="index.html" style="color:#FFD700;font-size:20px;">← العودة للرئيسية</a>
   </div>
-
-  <!-- محتوى الكورس -->
-  <div id="course-container" class="course-container">
-    <!-- الشرائح -->
-    <div class="slide active" id="slide0">
-      <h1>🚀 مرحباً بك في Family Project!</h1>
-      <p>هتتعلم بناء مواقع كاملة في ساعة واحدة بدون برمجة سنين.<br>ابدأ الآن مع الخطوة الأولى! 👇</p>
+  
+  <div id="course-content" style="display:none;">
+    <div class="container">
+      <h1 style="text-align:center;color:white;font-size:3rem;margin-bottom:10px;">🎓 كورس Family Business</h1>
+      <p style="text-align:center;color:rgba(255,255,255,0.9);font-size:1.2rem;">بناء أعمال إلكترونية ناجحة بـ Firebase</p>
+      
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      
+      <div id="slides-container"></div>
+      
+      <div class="nav-buttons">
+        <button id="prevBtn" class="nav-btn" onclick="prevSlide()" disabled>← السابق</button>
+        <button id="nextBtn" class="nav-btn" onclick="nextSlide()">التالي →</button>
+        <button id="fullscreenBtn" class="nav-btn" onclick="toggleFullscreen()" style="background:linear-gradient(45deg,#667eea,#764ba2);">⛶ ملء الشاشة</button>
+      </div>
+      
+      <div id="quiz-container"></div>
+      
+      <div id="certificate">
+        <h2>🏆 شهادة إتمام الكورس</h2>
+        <p id="certName">الاسم: [جاري التحميل]</p>
+        <p>تم إتمام كورس Family Business بنجاح!</p>
+        <p>التاريخ: <span id="certDate"></span></p>
+        <button onclick="generateCertificate()" class="nav-btn" style="background:linear-gradient(45deg,#4CAF50,#45a049);">📄 تحميل الشهادة PDF</button>
+      </div>
     </div>
-    
-    <div class="slide" id="slide1">
-      <h1>🎯 الخطوة 1: فكرة المشروع</h1>
-      <p>حدد فكرتك الأولى: تطبيق توصيل، متجر إلكتروني، أو أي شيء تفكر فيه.<br>المهم إنها تكون بسيطة وواضحة.</p>
-    </div>
-    
-    <div class="slide" id="slide2">
-      <h1>🧠 الخطوة 2: Perplexity.ai</h1>
-      <p>روح <a href="https://perplexity.ai" target="_blank">perplexity.ai</a><br>
-      اكتب: "بني لي موقع [فكرتك] بـ HTML CSS JS Firebase"</p>
-    </div>
-    
-    <div class="slide" id="slide3">
-      <h1>💻 الخطوة 3: OneCompiler</h1>
-      <p>انسخ الكود من Perplexity.<br>
-      روح <a href="https://onecompiler.com/html" target="_blank">onecompiler.com/html</a><br>
-      الصق الكود واضغط Run!</p>
-    </div>
-    
-    <!-- أضف المزيد من الشرائح هنا حسب الحاجة -->
-    <div class="slide" id="slide19">
-      <h1>🎊 مبروك! خلصت الكورس</h1>
-      <p>موقعك لايف دلوقتي على GitHub Pages.<br>
-      علم أولادك وأهلك الخطوات دي! 👨‍👩‍👧‍👦<br>
-      شارك رابط موقعك معانا.</p>
-    </div>
-  </div>
-
-  <!-- التنقل -->
-  <div class="nav" id="nav" style="display: none;">
-    <button class="nav-btn" onclick="prevSlide()">السابق</button>
-    <div id="slide-counter">1 / 20</div>
-    <button class="nav-btn" onclick="nextSlide()">التالي</button>
   </div>
 
   <script>
-    let currentSlide = 0;
-    const totalSlides = 20; // عدّل حسب عدد الشرائح
+    // Firebase Config (من مشروعك)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9Xq5o0q0q0q0q0q0q0q0q0q0q0q0q0q0", // ضع config بتاعك هنا
+      authDomain: "kidsup-e998d.firebaseapp.com",
+      projectId: "kidsup-e998d",
+      storageBucket: "kidsup-e998d.firebasestorage.app",
+      messagingSenderId: "959800471628",
+      appId: "1:959800471628"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // التحقق من صلاحية الدخول
-    fpOnAuthStateChanged(async (user, hasAccess) => {
-      if (!user) {
-        document.getElementById('welcome-screen').innerHTML = `
-          <h1>🔐 يرجى تسجيل الدخول</h1>
-          <p>للدخول للكورس، اضغط على زر ابدأ الكورس من الصفحة الرئيسية</p>
-          <a href="login.html" class="btn">تسجيل الدخول</a>
-          <a href="index.html" class="btn">العودة للرئيسية</a>
-        `;
-        return;
-      }
-      
-      if (hasAccess) {
-        // المستخدم مفعّل له الكورس
-        document.getElementById('welcome-screen').style.display = 'none';
-        document.getElementById('course-container').style.display = 'block';
-        document.getElementById('nav').style.display = 'flex';
-        startSlideshow();
+    let currentSlide = 0;
+    let totalSlides = 10;
+    let userProgress = {};
+    let user = null;
+
+    // محتوى الدروس (10 دروس عملية)
+    const lessons = [
+      { title: "درس 1: إعداد Firebase", video: "https://www.youtube.com/embed/fgdpvwEWJ9M", content: "تعلم إعداد Firebase لمشروعك الأول..." },
+      { title: "درس 2: Authentication", video: "", content: "نظم تسجيل الدخول والصلاحيات..." },
+      { title: "درس 3: Firestore Database", video: "https://www.youtube.com/embed/N0j6Fe2vAK4", content: "بناء قاعدة بيانات NoSQL..." },
+      // أضف باقي الدروس هنا... (9 دروس إضافية عن e-commerce, payments, admin dashboard)
+      { title: "درس 10: نشر المشروع", video: "", content: "GitHub Pages + Firebase Hosting..." }
+    ];
+
+    // التحقق من الوصول
+    auth.onAuthStateChanged(async (u) => {
+      if (u) {
+        user = u;
+        const userDoc = await db.collection('users').doc(u.uid).get();
+        if (userDoc.exists && userDoc.data().courseAccess) {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('course-content').style.display = 'block';
+          loadProgress();
+          initSlides();
+        } else {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('no-access').style.display = 'block';
+        }
       } else {
-        document.getElementById('welcome-screen').style.display = 'none';
-        document.getElementById('no-access').style.display = 'flex';
+        window.location = 'login.html';
       }
     });
 
-    function startSlideshow() {
-      showSlide(currentSlide);
+    async function loadProgress() {
+      const progressDoc = await db.collection('users').doc(user.uid).collection('progress').doc('family-business').get();
+      userProgress = progressDoc.exists ? progressDoc.data() : {};
+      updateProgressBar();
     }
 
-    function showSlide(n) {
-      document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
-      document.getElementById(`slide${n}`).classList.add('active');
-      document.getElementById('slide-counter').textContent = `${n + 1} / ${totalSlides}`;
+    async function saveProgress() {
+      await db.collection('users').doc(user.uid).collection('progress').doc('family-business').set(userProgress);
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const completed = Object.values(userProgress).filter(p => p.completed).length;
+      const progress = (completed / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    function initSlides() {
+      const container = document.getElementById('slides-container');
+      lessons.forEach((lesson, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        slide.innerHTML = `
+          <div class="slide-content">
+            <h2>${lesson.title}</h2>
+            ${lesson.video ? `<div class="youtube-container"><iframe src="${lesson.video}" frameborder="0" allowfullscreen></iframe></div>` : ''}
+            <p>${lesson.content}</p>
+            <button onclick="completeLesson(${index})" style="background:#4CAF50;color:white;padding:10px 20px;border:none;border-radius:10px;">✅ تم الإتمام</button>
+          </div>
+        `;
+        container.appendChild(slide);
+      });
+      showSlide(0);
+    }
+
+    function showSlide(index) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.slide')[index].classList.add('active');
+      currentSlide = index;
+      
+      document.getElementById('prevBtn').disabled = index === 0;
+      document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+      
+      // تحقق إذا كان quiz أو certificate
+      if (index === totalSlides - 1) {
+        document.getElementById('certificate').style.display = 'block';
+      }
     }
 
     function nextSlide() {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      showSlide(currentSlide);
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        showSlide(currentSlide);
+      }
     }
 
     function prevSlide() {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      showSlide(currentSlide);
+      if (currentSlide > 0) {
+        currentSlide--;
+        showSlide(currentSlide);
+      }
+    }
+
+    async function completeLesson(index) {
+      userProgress[index] = { ...userProgress[index], completed: true, date: new Date().toISOString() };
+      await saveProgress();
+      alert('تم حفظ التقدم! 🎉');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    async function generateCertificate() {
+      const certName = document.getElementById('certName');
+      certName.textContent = `الاسم: ${user.email}`;
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString('ar');
+      
+      const certificateEl = document.getElementById('certificate');
+      certificateEl.style.display = 'block';
+      
+      html2canvas(certificateEl).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new window.jspdf.jsPDF();
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`شهادة-FamilyBusiness-${user.uid}.pdf`);
+      });
     }
   </script>
 </body>
