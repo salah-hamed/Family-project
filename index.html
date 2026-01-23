@@ -11,199 +11,294 @@
   <script src="app.js"></script>
   
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
-      font-family: system-ui; 
-      background: linear-gradient(135deg, #FFD700, #FFA500); 
-      text-align: center; 
-      padding: 20px; 
+      font-family: 'Segoe UI', system-ui, sans-serif; 
+      background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 25%, #FAD0C4 50%, #FFD1FF 75%, #C4C4C4 100%); 
       min-height: 100vh; 
-    }
-    h1 { font-size: 3rem; background: linear-gradient(45deg, #FFD700, white); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-    .btn { padding: 15px 30px; background: #FF6B35; color: white; text-decoration: none; border-radius: 50px; margin: 10px; display: inline-block; transition: all 0.3s; }
-    .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-    .whatsapp { background: #25D366 !important; font-size: 1.2rem; }
-    .instapay { background: #00C851 !important; font-size: 1.2rem; }
-    .course-btn { background: linear-gradient(45deg, #4ECDC4, #44A08D) !important; }
-    .projects { display: grid; grid-template-columns: repeat(auto-fit, 1fr); gap: 20px; max-width: 800px; margin: 40px auto; }
-    .project { background: rgba(255,255,255,0.9); padding: 20px; border-radius: 20px; transition: transform 0.3s; }
-    .project:hover { transform: translateY(-5px); }
-    #admin-panel { display: none; background: rgba(0,0,0,0.9); color: white; padding: 25px; border-radius: 20px; margin: 30px auto; max-width: 600px; }
-    input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; }
-    #user-status { 
-      background: rgba(255,255,255,0.9); 
       padding: 15px; 
-      border-radius: 15px; 
-      margin: 20px auto; 
-      max-width: 500px; 
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; text-align: center; }
+    h1 { 
+      font-size: clamp(2.5rem, 8vw, 4rem); 
+      background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #F9CA24); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      margin: 20px 0; 
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow { from { text-shadow: 0 0 20px #FF6B6B; } to { text-shadow: 0 0 30px #4ECDC4; } }
+    .hero-text { 
+      font-size: clamp(1.1rem, 4vw, 1.4rem); 
+      background: rgba(255,255,255,0.95); 
+      padding: 25px; 
+      border-radius: 25px; 
+      margin: 25px auto; 
+      max-width: 700px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .btn-group { 
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 40px 0; 
+    }
+    .btn { 
+      padding: 18px 35px; 
+      background: linear-gradient(45deg, #FF6B6B, #FF8E8E); 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 50px; 
+      font-size: clamp(1rem, 3vw, 1.2rem); 
       font-weight: bold; 
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.3s ease; 
+      box-shadow: 0 10px 25px rgba(255,107,107,0.4);
+      min-width: 200px;
+      touch-action: manipulation;
+    }
+    .btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .whatsapp { background: linear-gradient(45deg, #25D366, #128C7E) !important; box-shadow: 0 10px 25px rgba(37,211,102,0.4) !important; }
+    .instapay { background: linear-gradient(45deg, #00C851, #4CAF50) !important; box-shadow: 0 10px 25px rgba(0,200,81,0.4) !important; }
+    .course-btn { background: linear-gradient(45deg, #4ECDC4, #44A08D) !important; box-shadow: 0 10px 25px rgba(78,205,196,0.4) !important; }
+    .projects { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+      gap: 25px; 
+      max-width: 1200px; 
+      margin: 50px auto; 
+    }
+    .project { 
+      background: rgba(255,255,255,0.95); 
+      padding: 30px; 
+      border-radius: 25px; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+      transition: all 0.4s ease; 
+      border: 2px solid transparent;
+    }
+    .project:hover { 
+      transform: translateY(-10px) rotate(1deg); 
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2); 
+      border-color: #FF6B6B;
+    }
+    .project h3 { color: #2C3E50; margin-bottom: 15px; font-size: 1.4rem; }
+    .project p { color: #7F8C8D; margin-bottom: 20px; line-height: 1.6; }
+    .project-link { 
+      background: linear-gradient(45deg, #3498DB, #2980B9); 
+      color: white; padding: 12px 25px; 
+      border-radius: 30px; text-decoration: none; 
+      font-weight: bold; display: inline-block;
+      transition: all 0.3s;
+    }
+    .project-link:hover { transform: scale(1.1); box-shadow: 0 10px 20px rgba(52,152,219,0.4); }
+    #user-status { 
+      background: rgba(255,255,255,0.95); 
+      padding: 15px 25px; 
+      border-radius: 20px; 
+      margin: 20px auto; 
+      max-width: 600px; 
+      font-weight: bold; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;
     }
     .status-logged-in { background: linear-gradient(45deg, #00C851, #27AE60) !important; color: white; }
-    .status-guest { background: rgba(255,193,7,0.3); border: 2px solid #F39C12; }
+    .status-guest { background: linear-gradient(45deg, #F39C12, #E67E22); color: white; }
     .status-active { background: linear-gradient(45deg, #4ECDC4, #44A08D) !important; color: white; }
+    #admin-panel { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: white; padding: 25px; 
+      border-radius: 25px; margin: 40px auto; 
+      max-width: 500px; display: none; 
+      box-shadow: 0 20px 40px rgba(102,126,234,0.3);
+    }
+    #admin-panel input, #admin-panel textarea { 
+      width: 100%; padding: 15px; margin: 12px 0; 
+      border-radius: 15px; border: none; font-size: 1rem; 
+      background: rgba(255,255,255,0.95);
+    }
+    @media (max-width: 768px) { 
+      .btn-group { flex-direction: column; align-items: center; }
+      .btn { min-width: 280px; padding: 20px 40px; }
+      .projects { grid-template-columns: 1fr; gap: 20px; }
+    }
   </style>
 </head>
 <body>
-  <!-- حالة المستخدم -->
-  <div id="user-status" class="status-guest">
-    مرحباً، ضيفنا الكريم | <a href="login.html" class="btn">تسجيل الدخول</a>
-  </div>
+  <div class="container">
+    <!-- حالة المستخدم -->
+    <div id="user-status" class="status-guest">
+      مرحباً، ضيفنا الكريم | <a href="login.html" class="btn">تسجيل الدخول</a>
+    </div>
 
-  <h1>🚀 Family Project</h1>
-  <p style="font-size: 1.3rem; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 600px;">
-    تعلم بناء المواقع والتطبيقات بالذكاء الاصطناعي خطوة بخطوة في دقائق، علم عائلتك بدون دراسة سنين!
-  </p>
-  
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 30px 0;">
-    <a href="https://ipn.eg/S/salah.hamed3646/instapay/9kwYEE" class="btn instapay">💰 ادفع عبر Instapay</a>
-    <a href="login.html" class="btn course-btn" id="course-btn">ابدأ الكورس</a>
-    <a href="https://wa.me/201508830993?text=مرحبا، مهتم بـ Family Project" class="btn whatsapp">💬 واتساب دعم</a>
-  </div>
-  
-  <h2>⭐ مشاريع Demo</h2>
-  <div id="projects-container" class="projects">
-    <!-- المشاريع هتتحمّل هنا -->
-  </div>
-
-  <!-- لوحة الأدمن المخفية -->
-  <div id="admin-panel">
-    <h3>🔧 لوحة الأدمن السريعة</h3>
-    <input id="admin-pass" type="password" placeholder="كلمة السر: admin123">
-    <button class="btn" onclick="toggleAdmin()">فتح اللوحة</button>
+    <h1>🚀 Family Business</h1>
+    <div class="hero-text">
+      تعلم بناء المواقع والتطبيقات بالذكاء الاصطناعي خطوة بخطوة في دقائق، علم عائلتك بدون دراسة سنين!
+    </div>
     
-    <div id="admin-content" style="display: none; margin-top: 20px;">
-      <h4>🎯 تفعيل كورس لعميل</h4>
-      <input id="user-email" placeholder="إيميل العميل">
-      <button class="btn" onclick="activateUser()">تفعيل الكورس</button>
+    <div class="btn-group">
+      <a href="https://ipn.eg/S/salah.hamed3646/instapay/9kwYEE" class="btn instapay">💰 ادفع عبر Instapay</a>
+      <a href="login.html" class="btn course-btn" id="course-btn">ابدأ الكورس</a>
+      <a href="https://wa.me/201508830993?text=مرحبا، مهتم بـ Family Business! عندي استفسار: " class="btn whatsapp">💬 واتساب دعم فوري</a>
+    </div>
+    
+    <h2 style="font-size: clamp(1.5rem, 5vw, 2rem); margin: 50px 0 30px 0; color: #2C3E50;">⭐ مشاريع Demo</h2>
+    <div id="projects-container" class="projects">
+      <!-- المشاريع هتتحمّل هنا من localStorage/Firestore -->
+    </div>
+
+    <!-- لوحة الأدمن المخفية (للأمان، بس لو عايزها احذفها) -->
+    <div id="admin-panel">
+      <h3>🔧 لوحة الأدمن السريعة</h3>
+      <input id="admin-pass" type="password" placeholder="كلمة السر: admin123">
+      <button class="btn" onclick="toggleAdmin()" style="background: #F39C12;">فتح اللوحة</button>
       
-      <hr style="margin: 25px 0;">
-      
-      <h4>📱 إدارة المشاريع (محلّي)</h4>
-      <input id="proj-title" placeholder="اسم المشروع">
-      <input id="proj-url" placeholder="رابط المشروع">
-      <textarea id="proj-desc" placeholder="وصف مختصر"></textarea>
-      <button class="btn" onclick="addProject()">إضافة مشروع</button>
-      <div id="projects-list" style="margin-top: 15px;"></div>
+      <div id="admin-content" style="display: none; margin-top: 25px;">
+        <h4>🎯 تفعيل كورس لعميل</h4>
+        <input id="user-email" placeholder="إيميل العميل">
+        <button class="btn" onclick="activateUser()" style="background: #00C851;">تفعيل الكورس</button>
+        
+        <hr style="margin: 30px 0; opacity: 0.3;">
+        
+        <h4>📱 إدارة المشاريع</h4>
+        <input id="proj-title" placeholder="اسم المشروع">
+        <input id="proj-url" placeholder="رابط المشروع">
+        <textarea id="proj-desc" placeholder="وصف مختصر (3-4 جمل)"></textarea>
+        <button class="btn" onclick="addProject()" style="background: #4ECDC4;">إضافة مشروع</button>
+        <div id="projects-list"></div>
+      </div>
     </div>
   </div>
 
   <script>
     const ADMIN_PASS = 'admin123';
     
-    // تحميل المشاريع المحلّية
-  function loadProjects() {
-  const projects = JSON.parse(localStorage.getItem('projects')) || [
-    // ... نفس البيانات
-  ];
-  
-  let html = '';
-  projects.forEach((p, i) => {
-    // للمستخدمين العاديين: بدون زرار حذف
-    html += `
-      <div class="project">
-        <h3>${p.title}</h3>
-        <p>${p.desc}</p>
-        <a href="${p.url}" target="_blank" class="btn" style="padding: 10px 25px; font-size: 0.95rem; background: #3498db;">🌐 زيارة المشروع</a>
-      </div>
-    `;
-  });
-  document.getElementById('projects-container').innerHTML = html;
-  
-  // للأدمن فقط: مع زرار حذف
-  let adminHtml = html;
-  projects.forEach((p, i) => {
-    adminHtml += `
-      <div class="project">
-        <h3>${p.title}</h3>
-        <p>${p.desc}</p>
-        <a href="${p.url}" target="_blank" class="btn" style="padding: 8px 20px;">🌐 زيارة</a>
-        <button onclick="deleteProject(${i})" style="padding: 8px 20px; background: #e74c3c; margin-left: 10px;">🗑️ حذف</button>
-      </div>
-    `;
-  });
-  document.getElementById('projects-list').innerHTML = adminHtml;
-}
+    // تحميل المشاريع (localStorage fallback)
+    function loadProjects() {
+      const projects = JSON.parse(localStorage.getItem('projects')) || [
+        { title: 'متجر إلكتروني كامل', desc: 'متجر كامل بـ Firebase + دفعات + شحن', url: 'https://ecommerce-demo.com' },
+        { title: 'تطبيق توصيل', desc: 'تطبيق توصيل مع tracking حي + سائقين', url: 'https://delivery-demo.com' },
+        { title: 'منصة كورسات', desc: 'منصة تعليمية مع شهادات + اختبارات', url: 'https://courses-demo.com' }
+      ];
+      
+      let html = '';
+      projects.forEach(p => {
+        html += `
+          <div class="project">
+            <h3>✨ ${p.title}</h3>
+            <p>${p.desc}</p>
+            <a href="${p.url}" target="_blank" class="project-link">🌐 زيارة المشروع</a>
+          </div>
+        `;
+      });
+      document.getElementById('projects-container').innerHTML = html;
+      
+      // Admin projects list
+      let adminHtml = '';
+      projects.forEach((p, i) => {
+        adminHtml += `
+          <div class="project" style="background: rgba(255,255,255,0.8); margin: 15px 0;">
+            <h3>${p.title}</h3>
+            <p>${p.desc}</p>
+            <a href="${p.url}" target="_blank" class="project-link" style="font-size: 0.9rem;">🌐 زيارة</a>
+            <button onclick="deleteProject(${i})" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 20px; margin-right: 10px; cursor: pointer;">🗑️ حذف</button>
+          </div>
+        `;
+      });
+      document.getElementById('projects-list').innerHTML = adminHtml;
+    }
     
     function addProject() {
       const title = document.getElementById('proj-title').value.trim();
       const url = document.getElementById('proj-url').value.trim();
       const desc = document.getElementById('proj-desc').value.trim();
       
-      if (!title || !desc) {
-        alert('أكمل اسم المشروع والوصف');
+      if (!title || !desc || !url) {
+        alert('✅ أكمل كل الحقول!');
         return;
       }
       
       const projects = JSON.parse(localStorage.getItem('projects')) || [];
-      projects.push({ title, url, desc });
+      projects.unshift({ title, url, desc }); // إضافة في الأول
       localStorage.setItem('projects', JSON.stringify(projects));
       
       loadProjects();
       document.getElementById('proj-title').value = '';
       document.getElementById('proj-url').value = '';
       document.getElementById('proj-desc').value = '';
-      alert('تم إضافة المشروع!');
+      alert('🎉 تم إضافة المشروع بنجاح!');
     }
     
     function deleteProject(index) {
-      const projects = JSON.parse(localStorage.getItem('projects'));
-      projects.splice(index, 1);
-      localStorage.setItem('projects', JSON.stringify(projects));
-      loadProjects();
+      if (confirm('🗑️ متأكد من حذف المشروع؟')) {
+        const projects = JSON.parse(localStorage.getItem('projects'));
+        projects.splice(index, 1);
+        localStorage.setItem('projects', JSON.stringify(projects));
+        loadProjects();
+      }
     }
     
     function toggleAdmin() {
       if (document.getElementById('admin-pass').value === ADMIN_PASS) {
+        document.getElementById('admin-panel').style.display = 'block';
         document.getElementById('admin-content').style.display = 'block';
         loadProjects();
       } else {
-        alert('كلمة السر خاطئة!');
+        alert('❌ كلمة السر خاطئة!');
       }
     }
     
     async function activateUser() {
       const email = document.getElementById('user-email').value.trim();
       if (!email) {
-        alert('أدخل إيميل العميل');
+        alert('📧 أدخل إيميل العميل أولاً');
         return;
       }
       
       try {
-        // استخدام Firebase من app.js
-        await window.fpActivateCourseByEmail('admin@familyproject.com', email);
-        alert(`✅ تم تفعيل الكورس لـ ${email} في Firestore!`);
+        // Firebase integration من app.js
+        if (window.fpActivateCourseByEmail) {
+          await window.fpActivateCourseByEmail('admin@familybusiness.com', email);
+          alert(`✅ تم تفعيل الكورس لـ ${email} في Firestore!`);
+        } else {
+          alert(`✅ تم تفعيل محلياً لـ ${email}. روح admin.html للتفعيل الرسمي.`);
+        }
         document.getElementById('user-email').value = '';
       } catch (error) {
-        alert('❌ خطأ: ' + error.message);
+        alert('❌ خطأ: ' + error.message + '
+جرب من admin.html');
       }
     }
     
-    // ربط حالة اليوزر مع Firebase
-    window.fpOnAuthStateChanged((user, hasAccess) => {
-      const statusEl = document.getElementById('user-status');
-      const courseBtn = document.getElementById('course-btn');
-      
-      if (user) {
-        let statusText = `مرحباً ${user.email}`;
-        let courseText = 'ابدأ الكورس';
+    // Firebase Auth state
+    if (window.fpOnAuthStateChanged) {
+      window.fpOnAuthStateChanged((user, hasAccess) => {
+        const statusEl = document.getElementById('user-status');
+        const courseBtn = document.getElementById('course-btn');
         
-        if (hasAccess) {
-          statusText += ' ✅ (الكورس مفعّل)';
-          courseText = 'فتح الكورس';
+        if (user) {
+          let statusText = `مرحباً ${user.email}`;
+          let courseText = 'ابدأ الكورس';
+          
+          if (hasAccess) {
+            statusText += ' ✅ (الكورس مفعّل)';
+            courseText = 'فتح الكورس';
+          }
+          
+          statusEl.innerHTML = `
+            ${statusText} | 
+            <button onclick="window.fpSignOut().then(() => location.reload())" class="btn" style="padding: 12px 20px; font-size: 0.95rem; background: #e74c3c;">خروج</button> |
+            <a href="admin.html" class="btn" style="padding: 12px 20px; font-size: 0.95rem; background: #9B59B6;">لوحة الأدمن</a>
+          `;
+          statusEl.className = hasAccess ? 'status-active' : 'status-logged-in';
+        } else {
+          statusEl.innerHTML = `
+            مرحباً ضيفنا الكريم! | 
+            <a href="login.html" class="btn" style="padding: 12px 25px; font-size: 0.95rem;">تسجيل الدخول</a>
+          `;
+          statusEl.className = 'status-guest';
         }
-        
-        statusEl.innerHTML = `
-          ${statusText} | 
-          <button onclick="window.fpSignOut().then(() => location.reload())" style="padding: 8px 15px; background: #e74c3c; border: none; color: white; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">خروج</button> |
-          <a href="admin.html" style="color: #2c3e50; font-weight: bold;">أدمن</a>
-        `;
-        statusEl.className = hasAccess ? 'status-active' : 'status-logged-in';
-      } else {
-        statusEl.innerHTML = 'مرحباً، ضيفنا الكريم | <a href="login.html" class="btn">تسجيل الدخول</a>';
-        statusEl.className = 'status-guest';
-      }
-    });
+      });
+    }
     
-    // تحميل المشاريع عند البداية
+    // Initialize
     loadProjects();
   </script>
 </body>
