@@ -83,95 +83,7 @@
             color: white;
         }
 
-        .lessons-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .lesson-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .lesson-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #4CAF50, #45a049);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .lesson-card.completed::before,
-        .lesson-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .lesson-card.completed {
-            border-left: 5px solid #4CAF50;
-        }
-
-        .lesson-number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .lesson-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .lesson-card p {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-        }
-
-        .lesson-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #ddd;
-        }
-
-        .status-dot.completed {
-            background: #4CAF50;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
+        /* Navigation Section */
         .navigation {
             display: flex;
             justify-content: space-between;
@@ -209,6 +121,165 @@
             cursor: not-allowed;
         }
 
+        /* Current Lesson Display - الأفضل للمتعلم */
+        .current-lesson {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .lesson-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 0 auto 15px;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .lesson-description {
+            font-size: 1.1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .lesson-content {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .lesson-content h4 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+            direction: ltr;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .complete-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+        }
+
+        /* Lessons Grid */
+        .lessons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .lesson-card.completed::before,
+        .lesson-card:hover::before,
+        .lesson-card.current::before {
+            transform: scaleX(1);
+        }
+
+        .lesson-card.completed {
+            border-left: 5px solid #4CAF50;
+        }
+
+        .lesson-card.current {
+            border-left: 5px solid #FF6B6B;
+            transform: scale(1.02);
+        }
+
+        .card-lesson-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .lesson-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
         .certificate-btn {
             background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
             color: white;
@@ -229,60 +300,24 @@
             box-shadow: 0 12px 35px rgba(255,107,107,0.6);
         }
 
-        .certificate-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .demo-notice {
-            background: rgba(255,193,7,0.2);
-            border: 2px solid rgba(255,193,7,0.5);
-            color: #856404;
+        .demo-notice, .status-info {
             padding: 15px;
             border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
         }
 
+        .demo-notice {
+            background: rgba(255,193,7,0.2);
+            border: 2px solid rgba(255,193,7,0.5);
+            color: #856404;
+        }
+
         .status-info {
             background: rgba(52,152,219,0.1);
             border: 1px solid rgba(52,152,219,0.3);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            color: #2980b9;
             font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .lessons-container {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .navigation {
-                flex-direction: column;
-            }
-
-            .nav-btn {
-                width: 100%;
-            }
-        }
-
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            padding: 50px;
         }
 
         .error {
@@ -292,6 +327,15 @@
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .header h1 { font-size: 2rem; }
+            .navigation { flex-direction: column; }
+            .nav-btn { width: 100%; }
+            .lesson-title { font-size: 1.6rem; }
+            pre { font-size: 12px; padding: 15px; }
         }
     </style>
 </head>
@@ -313,12 +357,13 @@
             <div class="progress-bar">
                 <div id="progressFill" class="progress-fill"></div>
             </div>
-            <div>الدروس المكتملة: <span id="completedCount">0</span> من <span id="totalLessons">10</span></div>
+            <div>الدرس الحالي: <span id="currentLessonNum">1</span> من <span id="totalLessons">10</span></div>
             <button id="modeToggle" class="mode-toggle">وضع التجربة التوضيحي</button>
         </div>
 
+        <!-- Navigation Buttons -->
         <div class="navigation">
-            <button id="prevBtn" class="nav-btn prev">
+            <button id="prevBtn" class="nav-btn prev" disabled>
                 ← الدرس السابق
             </button>
             <button id="nextBtn" class="nav-btn next">
@@ -326,13 +371,27 @@
             </button>
         </div>
 
+        <!-- Current Lesson Content - الأفضل للمتعلم -->
+        <div id="currentLesson" class="current-lesson" style="display: none;">
+            <div class="lesson-header">
+                <div id="lessonNumber" class="lesson-number"></div>
+                <h2 id="lessonTitle" class="lesson-title"></h2>
+                <p id="lessonDesc" class="lesson-description"></p>
+            </div>
+            <div class="lesson-content">
+                <h4>📝 جرب هذا الكود:</h4>
+                <pre id="lessonCode"></pre>
+                <button id="completeBtn" class="complete-btn">✅ إكمال هذا الدرس</button>
+            </div>
+        </div>
+
+        <!-- Lessons Grid -->
+        <h3 style="color: white; text-align: center; margin-bottom: 20px;">جميع دروس الدورة</h3>
         <div id="lessonsContainer" class="lessons-container"></div>
 
         <button id="certificateBtn" class="certificate-btn" style="display: none;" disabled>
             🏆 تحميل شهادة الإتمام
         </button>
-
-        <div id="loading" class="loading" style="display: none;">جاري تحميل الدورة...</div>
     </div>
 
     <script>
@@ -352,220 +411,164 @@
         let isDemoMode = true;
         let db = null;
         let userId = null;
-        let unsubscribeProgress = null;
 
-        // Lessons data (syntax error fixed - proper array)
+        // Lessons data مع محتوى كامل
         const lessonData = [
             {
-                id: 1,
-                title: "مرحباً بالعالم!",
-                description: "تعرف على أساسيات البرمجة واكتب أول برنامج لك",
-                content: "```javascript
-console.log('مرحباً بالعالم!');
+                id: 1, title: "مرحباً بالعالم!", description: "أول خطوة في عالم البرمجة - اكتب رسالتك الأولى للكمبيوتر",
+                content: `console.log('مرحباً بالعالم! 👋');
 // هذا أول برنامج في حياتك!
-```",
-                completed: false
+// console.log تعني "اطبع هذا النص"`
             },
             {
-                id: 2,
-                title: "المتغيرات",
-                description: "تعلم كيفية حفظ البيانات في المتغيرات",
-                content: "```javascript
-let name = 'أحمد';
+                id: 2, title: "المتغيرات", description: "احفظ معلوماتك الخاصة في صناديق رقمية",
+                content: `let name = 'أحمد';
 let age = 12;
-console.log(`اسمي ${name} وعمري ${age}`);
-```",
-                completed: false
+let city = 'القاهرة';
+
+console.log(`اسمي ${name} وعمري ${age} سنة من ${city}`);`
             },
             {
-                id: 3,
-                title: "الدوال",
-                description: "اكتب كود يمكن إعادة استخدامه",
-                content: "```javascript
-function sayHello(name) {
-    console.log(`مرحباً ${name}!`);
+                id: 3, title: "الدوال", description: "اصنع أدوات قابلة لإعادة الاستخدام",
+                content: `function sayHello(name) {
+    console.log(`مرحباً يا ${name}! 🎉`);
 }
+
 sayHello('سارة');
-```",
-                completed: false
+sayHello('محمد');`
             },
             {
-                id: 4,
-                title: "الشروط المنطقية",
-                description: "اتخذ قرارات في برنامجك",
-                content: "```javascript
-let score = 85;
+                id: 4, title: "الشروط المنطقية", description: "دع الكمبيوتر يتخذ قرارات ذكية",
+                content: `let score = 85;
+
 if (score >= 90) {
-    console.log('ممتاز!');
+    console.log('ممتاز! ⭐');
+} else if (score >= 70) {
+    console.log('جيد جداً 👍');
 } else {
-    console.log('جيد جداً');
+    console.log('يحتاج تدريب أكثر 📚');
+}`
+            },
+            {
+                id: 5, title: "الحلقات", description: "كرّر العمليات آلاف المرات بضغطة واحدة",
+                content: `for (let i = 1; i <= 5; i++) {
+    console.log(`الرقم ${i}: مرحباً!`);
 }
-```",
-                completed: false
+
+// ستنفّذ 5 مرات تلقائياً!`
             },
             {
-                id: 5,
-                title: "الحلقات",
-                description: "كرر العمليات تلقائياً",
-                content: "```javascript
-for (let i = 1; i <= 5; i++) {
-    console.log(`الرقم ${i}`);
-}
-```",
-                completed: false
+                id: 6, title: "المصفوفات", description: "احفظ قوائم كاملة من البيانات",
+                content: `let fruits = ['تفاح', 'موز', 'برتقال', 'مانجو'];
+
+fruits.forEach((fruit, index) => {
+    console.log(`الفاكهة رقم ${index + 1}: ${fruit}`);
+});`
             },
             {
-                id: 6,
-                title: "المصفوفات",
-                description: "احفظ قوائم من البيانات",
-                content: "```javascript
-let fruits = ['تفاح', 'موز', 'برتقال'];
-fruits.forEach(fruit => {
-    console.log(`أحب ${fruit}`);
-});
-```",
-                completed: false
-            },
-            {
-                id: 7,
-                title: "الكائنات",
-                description: "نظم بياناتك بشكل أفضل",
-                content: "```javascript
-let student = {
-    name: 'محمد',
+                id: 7, title: "الكائنات", description: "نظّم معلوماتك في هيكل منظم",
+                content: `let student = {
+    name: 'فاطمة',
     age: 14,
-    grade: 'أ'
+    grade: 'أ',
+    subjects: ['رياضيات', 'علوم']
 };
-console.log(student.name);
-```",
-                completed: false
+
+console.log(`الطالبة ${student.name} درجتها ${student.grade}`);`
             },
             {
-                id: 8,
-                title: "الأحداث",
-                description: "اجعل برنامجك تفاعلياً",
-                content: "```javascript
-document.getElementById('btn').addEventListener('click', () => {
-    alert('تم الضغط!');
-});
-```",
-                completed: false
+                id: 8, title: "الأحداث", description: "اجعل صفحتك تفاعلية مع النقر",
+                content: `// ضع هذا في HTML: <button id="myBtn">اضغط هنا</button>
+
+document.getElementById('myBtn').addEventListener('click', () => {
+    alert('تم الضغط! 🎊');
+});`
             },
             {
-                id: 9,
-                title: "DOM Manipulation",
-                description: "تغيير صفحة الويب ديناميكياً",
-                content: "```javascript
-document.getElementById('title').innerHTML = 'مرحباً!'
+                id: 9, title: "التحكم في الصفحة", description: "غيّر شكل الصفحة ديناميكياً",
+                content: `// ضع في HTML: <h1 id="title">العنوان الأصلي</h1>
+
+document.getElementById('title').innerHTML = 'مرحباً بالمتعلمين! 🌟';
 document.getElementById('title').style.color = 'blue';
-```",
-                completed: false
+document.getElementById('title').style.fontSize = '2rem';`
             },
             {
-                id: 10,
-                title: "مشروع نهائي",
-                description: "بناء آلة حاسبة كاملة",
-                content: "```javascript
-// آلة حاسبة كاملة
-function calculator(a, b, operation) {
+                id: 10, title: "مشروع نهائي: آلة حاسبة", description: "بناء تطبيق حقيقي كامل الوظائف",
+                content: `function calculator(num1, num2, operation) {
     switch(operation) {
-        case '+': return a + b;
-        case '-': return a - b;
-        // ... باقي العمليات
+        case '+': return num1 + num2;
+        case '-': return num1 - num2;
+        case '*': return num1 * num2;
+        case '/': return num1 / num2;
+        default: return 'عملية غير صحيحة';
     }
 }
-```",
-                completed: false
+
+console.log(calculator(10, 5, '+')); // 15`
             }
         ];
 
         // Initialize app
         async function initApp() {
-            try {
-                // Initialize Firebase if config is valid
-                if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSyB...YOUR_API_KEY...") {
-                    firebase.initializeApp(firebaseConfig);
-                    db = firebase.firestore();
-                    
-                    try {
-                        await firebase.auth().signInAnonymously();
-                        firebase.auth().onAuthStateChanged(async (user) => {
-                            if (user) {
-                                userId = user.uid;
-                                isDemoMode = false;
-                                await loadProgress();
-                                updateUI();
-                            }
-                        });
-                    } catch (authError) {
-                        console.warn('Auth failed, using demo mode:', authError);
-                        isDemoMode = true;
-                    }
-                } else {
-                    console.log('Firebase config incomplete, using demo mode');
+            if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSyB...YOUR_API_KEY...") {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                
+                try {
+                    await firebase.auth().signInAnonymously();
+                    firebase.auth().onAuthStateChanged(async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            isDemoMode = false;
+                            await loadProgress();
+                            updateUI();
+                        }
+                    });
+                } catch (error) {
                     isDemoMode = true;
                 }
-
-                lessons = [...lessonData];
-                renderLessons();
-                updateProgress();
-                setupEventListeners();
-                
-                document.getElementById('loading').style.display = 'none';
-            } catch (error) {
-                console.error('Init error:', error);
-                showError('خطأ في التحميل: ' + error.message);
-                lessons = [...lessonData];
-                renderLessons();
-                updateProgress();
-                setupEventListeners();
-                document.getElementById('loading').style.display = 'none';
+            } else {
+                isDemoMode = true;
             }
+
+            lessons = lessonData.map(l => ({...l, completed: false}));
+            renderLessons();
+            showCurrentLesson();
+            updateProgress();
+            setupEventListeners();
         }
 
         function setupEventListeners() {
-            // Mode toggle
             document.getElementById('modeToggle').addEventListener('click', toggleMode);
-
-            // Navigation
             document.getElementById('prevBtn').addEventListener('click', prevLesson);
             document.getElementById('nextBtn').addEventListener('click', nextLesson);
-
-            // Certificate
             document.getElementById('certificateBtn').addEventListener('click', generateCertificate);
+            document.getElementById('completeBtn').addEventListener('click', completeCurrentLesson);
         }
 
         function toggleMode() {
             isDemoMode = !isDemoMode;
-            const toggleBtn = document.getElementById('modeToggle');
-            
+            const btn = document.getElementById('modeToggle');
             if (isDemoMode) {
-                toggleBtn.textContent = 'وضع التجربة التوضيحي';
-                toggleBtn.classList.remove('active');
+                btn.textContent = 'وضع التجربة التوضيحي';
+                btn.classList.remove('active');
                 document.getElementById('demoNotice').style.display = 'block';
-                // Reset progress for demo
-                lessons.forEach(lesson => lesson.completed = false);
             } else {
-                toggleBtn.textContent = 'وضع Firebase';
-                toggleBtn.classList.add('active');
+                btn.textContent = 'وضع Firebase';
+                btn.classList.add('active');
                 document.getElementById('demoNotice').style.display = 'none';
                 loadProgress();
             }
-            
-            renderLessons();
-            updateProgress();
-            updateStatusInfo();
+            updateUI();
         }
 
         async function loadProgress() {
             if (isDemoMode || !db || !userId) {
+                loadLocalProgress();
                 return;
             }
-
             try {
-                const userRef = db.collection('users').doc(userId);
-                const doc = await userRef.get();
-                
+                const doc = await db.collection('users').doc(userId).get();
                 if (doc.exists && doc.data().courseActive) {
                     const progress = doc.data().progress || {};
                     lessons.forEach(lesson => {
@@ -574,99 +577,102 @@ function calculator(a, b, operation) {
                     currentLessonIndex = progress.currentLesson || 0;
                 }
             } catch (error) {
-                console.error('Load progress error:', error);
-                // Create collection with proper permissions if needed
-                await ensureFirestorePermissions();
+                console.error('Load error:', error);
+            }
+        }
+
+        function loadLocalProgress() {
+            const saved = localStorage.getItem('courseProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                lessons.forEach(l => l.completed = data.lessons[l.id] || false);
+                currentLessonIndex = data.current || 0;
             }
         }
 
         async function saveProgress() {
+            const progressData = {
+                lessons: lessons.reduce((acc, l) => { acc[l.id] = l.completed; return acc; }, {}),
+                currentLesson: currentLessonIndex,
+                courseActive: true
+            };
+
             if (isDemoMode || !db || !userId) {
-                localStorage.setItem('courseProgress', JSON.stringify({
-                    lessons: lessons.map(l => ({id: l.id, completed: l.completed})),
-                    currentLessonIndex
-                }));
+                localStorage.setItem('courseProgress', JSON.stringify(progressData));
                 return;
             }
 
             try {
-                await db.collection('users').doc(userId).set({
-                    courseActive: true,
-                    progress: lessons.reduce((acc, lesson) => {
-                        acc[lesson.id] = lesson.completed;
-                        return acc;
-                    }, {}),
-                    currentLessonIndex,
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                    completedLessons: lessons.filter(l => l.completed).length
-                }, { merge: true });
+                await db.collection('users').doc(userId).set(progressData, { merge: true });
             } catch (error) {
-                console.error('Save progress error:', error);
-                localStorage.setItem('courseProgress', JSON.stringify({
-                    lessons: lessons.map(l => ({id: l.id, completed: l.completed})),
-                    currentLessonIndex
-                }));
-            }
-        }
-
-        async function ensureFirestorePermissions() {
-            if (!db || !userId) return;
-            
-            try {
-                // This creates the document if it doesn't exist with proper permissions
-                await db.collection('users').doc(userId).set({
-                    courseActive: true,
-                    progress: {},
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-            } catch (error) {
-                console.error('Permissions setup error:', error);
+                localStorage.setItem('courseProgress', JSON.stringify(progressData));
             }
         }
 
         function renderLessons() {
             const container = document.getElementById('lessonsContainer');
             container.innerHTML = lessons.map((lesson, index) => `
-                <div class="lesson-card ${lesson.completed ? 'completed' : ''}" 
-                     onclick="openLesson(${index})">
-                    <div class="lesson-number">${lesson.id}</div>
+                <div class="lesson-card ${lesson.completed ? 'completed' : ''} ${index === currentLessonIndex ? 'current' : ''}" 
+                     onclick="goToLesson(${index})">
+                    <div class="card-lesson-number">${lesson.id}</div>
                     <h3>${lesson.title}</h3>
                     <p>${lesson.description}</p>
-                    <div class="lesson-status">
-                        <div class="status-dot ${lesson.completed ? 'completed' : ''}"></div>
-                        <span>${lesson.completed ? 'مكتمل ✅' : 'قيد الدراسة'}</span>
+                    <div style="color: #666; font-size: 14px;">
+                        ${lesson.completed ? '✅ مكتمل' : index === currentLessonIndex ? '🔥 الحالي' : 'قيد الدراسة'}
                     </div>
                 </div>
             `).join('');
         }
 
-        function openLesson(index) {
+        function showCurrentLesson() {
+            const lesson = lessons[currentLessonIndex];
+            if (!lesson) return;
+
+            document.getElementById('currentLesson').style.display = 'block';
+            document.getElementById('lessonNumber').textContent = lesson.id;
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('lessonDesc').textContent = lesson.description;
+            document.getElementById('lessonCode').textContent = lesson.content;
+            document.getElementById('currentLessonNum').textContent = lesson.id;
+
+            // Scroll to current lesson
+            document.getElementById('currentLesson').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function goToLesson(index) {
             currentLessonIndex = index;
-            // Simulate lesson view (in real app, show modal/content)
-            lessons[index].completed = true;
+            lessons[currentLessonIndex].completed = true;
             saveProgress();
-            renderLessons();
-            updateProgress();
-            updateNavigation();
+            updateUI();
         }
 
         function prevLesson() {
             if (currentLessonIndex > 0) {
                 currentLessonIndex--;
-                updateNavigation();
+                updateUI();
             }
         }
 
         function nextLesson() {
             if (currentLessonIndex < lessons.length - 1) {
                 currentLessonIndex++;
-                // Auto-complete current lesson
-                lessons[currentLessonIndex - 1].completed = true;
-                saveProgress();
-                renderLessons();
-                updateProgress();
-                updateNavigation();
+                updateUI();
             }
+        }
+
+        function completeCurrentLesson() {
+            lessons[currentLessonIndex].completed = true;
+            saveProgress();
+            updateUI();
+            alert('✅ تم إكمال الدرس بنجاح! يمكنك الانتقال للدرس التالي');
+        }
+
+        function updateUI() {
+            renderLessons();
+            showCurrentLesson();
+            updateProgress();
+            updateNavigation();
+            updateStatusInfo();
         }
 
         function updateProgress() {
@@ -675,17 +681,13 @@ function calculator(a, b, operation) {
             const percentage = Math.round((completed / total) * 100);
 
             document.getElementById('progressPercent').textContent = percentage + '%';
-            document.getElementById('completedCount').textContent = completed;
             document.getElementById('totalLessons').textContent = total;
             document.getElementById('progressFill').style.width = percentage + '%';
 
-            // Show certificate button if course completed
-            const certificateBtn = document.getElementById('certificateBtn');
+            const certBtn = document.getElementById('certificateBtn');
             if (percentage === 100) {
-                certificateBtn.style.display = 'block';
-                certificateBtn.disabled = false;
-            } else {
-                certificateBtn.style.display = 'none';
+                certBtn.style.display = 'block';
+                certBtn.disabled = false;
             }
         }
 
@@ -695,85 +697,43 @@ function calculator(a, b, operation) {
         }
 
         function updateStatusInfo() {
-            const statusInfo = document.getElementById('statusInfo');
+            const info = document.getElementById('statusInfo');
             if (isDemoMode) {
-                statusInfo.style.display = 'none';
+                info.style.display = 'none';
             } else {
-                statusInfo.style.display = 'block';
-                statusInfo.innerHTML = `
-                    ✅ متصل بـ Firebase<br>
-                    👤 معرف المستخدم: ${userId?.substring(0,8)}...<br>
-                    💾 الحفظ السحابي مفعل
-                `;
+                info.style.display = 'block';
+                info.innerHTML = `✅ Firebase مفعّل | 👤 ${userId?.substring(0,8)}... | 💾 سحابي`;
             }
         }
 
         function generateCertificate() {
-            if (lessons.some(l => !l.completed)) {
-                alert('يرجى إكمال جميع الدروس أولاً!');
-                return;
-            }
-
+            if (lessons.some(l => !l.completed)) return alert('أكمل جميع الدروس أولاً!');
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Arabic font support (using built-in)
-            doc.setFont("helvetica");
-            doc.setFontSize(20);
-            doc.text('🏆 شهادة إتمام الدورة', 105, 30, { align: 'center' });
+            doc.setFontSize(24);
+            doc.text('🏆 شهادة إتمام الدورة', 105, 40, { align: 'center' });
+            doc.setFontSize(16);
+            doc.text('دورة تعلم البرمجة - KidsUp', 105, 70, { align: 'center' });
+            doc.text(`المتدرّب: ${userId?.substring(0,12) || 'النجيب'}`, 105, 100, { align: 'center' });
+            doc.text(`تاريخ الإنجاز: ${new Date().toLocaleDateString('ar-EG')}`, 105, 120, { align: 'center' });
+            doc.text('عدد الدروس: 10 دروس كاملة', 105, 140, { align: 'center' });
+            doc.text('KidsUp التعليمية', 105, 200, { align: 'center' });
             
-            doc.setFontSize(14);
-            doc.text('تم منح هذه الشهادة لـ', 105, 60, { align: 'center' });
-            doc.setFontSize(18);
-            doc.text(userId ? `المستخدم ${userId.substring(0,8)}` : 'المتدرب المتميز', 105, 80, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.text('بإتمام دورة "تعلم البرمجة من الصفر"', 105, 110, { align: 'center' });
-            doc.text('عدد الدروس: 10 دروس', 105, 125, { align: 'center' });
-            doc.text(`تاريخ الإتمام: ${new Date().toLocaleDateString('ar-EG')}`, 105, 140, { align: 'center' });
-            
-            // KidsUp branding
-            doc.setFontSize(10);
-            doc.text('صادر عن منصة KidsUp التعليمية', 105, 170, { align: 'center' });
-            doc.text('www.kidsup.com', 105, 180, { align: 'center' });
-            
-            // Signature line
-            doc.line(50, 200, 160, 200);
-            doc.text('الإدارة التعليمية', 105, 210, { align: 'center' });
-            
-            doc.save('certificate-kidsup-programming.pdf');
+            doc.save('kidsup-programming-certificate.pdf');
         }
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMsg');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+        function showError(msg) {
+            const div = document.getElementById('errorMsg');
+            div.textContent = msg;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 5000);
         }
 
-        // Load localStorage fallback for demo mode
-        function loadLocalProgress() {
-            const saved = localStorage.getItem('courseProgress');
-            if (saved) {
-                const progress = JSON.parse(saved);
-                lessons.forEach(lesson => {
-                    const savedLesson = progress.lessons.find(l => l.id === lesson.id);
-                    if (savedLesson) lesson.completed = savedLesson.completed;
-                });
-                currentLessonIndex = progress.currentLessonIndex || 0;
-            }
-        }
-
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            loadLocalProgress();
-            initApp();
-        });
-
-        // Save progress periodically
-        setInterval(saveProgress, 30000); // Every 30 seconds
+        // Init
+        window.addEventListener('load', initApp);
+        setInterval(saveProgress, 20000); // Save every 20s
     </script>
 </body>
-</html>
+    </html>
