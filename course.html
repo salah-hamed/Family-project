@@ -3,1028 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دورة Family Business - تعلم التجارة الإلكترونية والتوصيل خطوة بخطوة</title>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>كورس بناء موقع بيع منتجات العناية - Family Business</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
-            min-height: 100vh; 
-            color: #2c3e50;
-            line-height: 1.7;
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        header { 
-            text-align: center; 
-            background: rgba(255,255,255,0.95);
-            padding: 40px 30px; 
-            border-radius: 25px; 
-            margin-bottom: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            animation: slideDown 1s ease-out;
-        }
-        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        h1 { 
-            font-size: 2.8em; 
-            background: linear-gradient(45deg, #e74c3c, #f39c12, #27ae60); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        .subtitle { font-size: 1.3em; color: #7f8c8d; margin-bottom: 20px; }
-        .progress-container { 
-            background: rgba(0,0,0,0.1); 
-            height: 12px; 
-            border-radius: 25px; 
-            margin: 25px 0; 
-            overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .progress-bar { 
-            height: 100%; 
-            background: linear-gradient(90deg, #27ae60, #2ecc71, #58d68d); 
-            width: 0%; 
-            transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            border-radius: 25px;
+        .slide-container {
             position: relative;
-            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .progress-bar::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 2s infinite;
+        .slide-container.active {
+            opacity: 1;
+            transform: translateX(0);
         }
-        @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
-        
-        .step-tracker { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-        .step-item { 
-            display: flex; align-items: center; gap: 10px; 
-            background: rgba(255,255,255,0.7); padding: 12px 20px; 
-            border-radius: 50px; font-weight: 600; transition: all 0.3s ease;
+        .slide {
+            max-width: 900px;
+            max-height: 80vh;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: slideIn 1s ease-out;
         }
-        .step-item.active { background: linear-gradient(45deg, #3498db, #2980b9); color: white; transform: scale(1.05); }
-        .step-number { 
-            width: 30px; height: 30px; background: #ecf0f1; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px; transition: all 0.3s ease;
+        @keyframes slideIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        h1 { font-size: 3em; margin-bottom: 20px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h2 { font-size: 2.2em; margin: 25px 0; color: #ffd93d; }
+        p { font-size: 1.3em; line-height: 1.7; margin: 20px 0; }
+        .highlight { 
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
         }
-        .step-item.active .step-number { background: white; color: #2980b9; }
-
-        .lessons-container { 
-            background: rgba(255,255,255,0.95); 
-            border-radius: 25px; 
-            padding: 40px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .code-box {
+            background: #1a1a2e;
+            color: #00ff88;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+            border-left: 5px solid #00ff88;
+            box-shadow: inset 0 0 20px rgba(0,255,136,0.1);
         }
-        .current-lesson-header { 
-            display: flex; align-items: center; gap: 20px; 
-            margin-bottom: 30px; padding-bottom: 20px; 
-            border-bottom: 3px solid #3498db;
-        }
-        .lesson-icon { font-size: 3em; }
-        .lesson-title { font-size: 2.2em; color: #2c3e50; font-weight: 700; }
-        .lesson-subtitle { color: #7f8c8d; font-size: 1.1em; margin-top: 5px; }
-
-        .action-steps { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            padding: 25px; 
-            border-radius: 20px; 
-            margin: 25px 0;
-        }
-        .action-steps h3 { margin-bottom: 20px; font-size: 1.5em; }
-        .step-list { list-style: none; counter-reset: step-counter; }
-        .step-list li { 
-            counter-increment: step-counter; 
-            margin-bottom: 15px; 
-            padding-left: 50px; 
-            position: relative;
-        }
-        .step-list li::before { 
-            content: counter(step-counter); 
-            position: absolute; right: 0; top: 0; 
-            width: 35px; height: 35px; 
-            background: rgba(255,255,255,0.3); 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px;
-        }
-
-        .code-hero { 
-            background: #2c3e50; 
-            color: #ecf0f1; 
-            padding: 30px; 
-            border-radius: 20px; 
-            margin: 30px 0; 
-            position: relative;
-            overflow: hidden;
-            font-family: 'Courier New', monospace; 
-            font-size: 15px; line-height: 1.6;
-        }
-        .code-hero::before { 
-            content: ''; position: absolute; top: 0; left: 0; right: 0; 
-            height: 4px; background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
-        }
-        .copy-hero { 
-            position: absolute; top: 15px; left: 15px; 
-            background: #27ae60; color: white; border: none; 
-            padding: 12px 20px; border-radius: 25px; 
-            cursor: pointer; font-weight: 600; font-size: 13px;
+        .link-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 15px 30px;
+            margin: 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
             transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .copy-hero:hover { background: #2ecc71; transform: scale(1.05); }
-        .try-now { 
-            display: inline-block; background: #e74c3c; color: white; 
-            padding: 15px 30px; border-radius: 50px; 
-            text-decoration: none; font-weight: 600; 
-            margin: 20px 0; transition: all 0.3s ease;
+        .link-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .try-now:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(231,76,60,0.4); }
-
-        .features-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; margin: 30px 0;
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
         }
-        .feature-card { 
-            background: rgba(255,255,255,0.8); padding: 25px; 
-            border-radius: 20px; text-align: center; 
-            transition: all 0.3s ease; border: 2px solid transparent;
+        .nav-btn {
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
-        .feature-card:hover { transform: translateY(-10px); border-color: #3498db; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .feature-icon { font-size: 3em; margin-bottom: 15px; display: block; }
-
-        .nav-buttons { 
-            display: flex; gap: 20px; justify-content: center; margin: 50px 0;
+        .nav-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.5);
+            color: #ffd93d;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2em;
         }
-        .nav-btn { 
-            flex: 1; max-width: 200px; 
-            padding: 20px 40px; border: none; 
-            border-radius: 50px; font-size: 1.3em; 
-            cursor: pointer; font-weight: 700; font-family: 'Cairo', sans-serif;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            transition: width 0.5s ease;
         }
-        .prev-btn { background: linear-gradient(45deg, #95a5a6, #7f8c8d); color: white; }
-        .next-btn { background: linear-gradient(45deg, #27ae60, #2ecc71); color: white; }
-        .nav-btn:hover:not(:disabled) { transform: translateY(-5px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-        .quiz-section { 
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
-            padding: 30px; border-radius: 20px; margin: 30px 0;
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
-        .quiz-question { margin-bottom: 25px; }
-        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
-        .quiz-option { 
-            padding: 18px; background: white; border-radius: 15px; 
-            cursor: pointer; transition: all 0.3s ease; border: 3px solid transparent;
-            font-weight: 600;
-        }
-        .quiz-option:hover { border-color: #3498db; transform: translateX(10px); }
-        .quiz-option.correct { border-color: #27ae60; background: #d5f4e6; }
-        .quiz-option.wrong { border-color: #e74c3c; background: #fadbd8; }
-
-        .certificate-section { text-align: center; padding: 50px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 25px; margin: 40px 0; }
-        .certificate-btn { 
-            background: linear-gradient(45deg, #f39c12, #e67e22); color: white; 
-            border: none; padding: 25px 60px; border-radius: 50px; 
-            font-size: 1.4em; font-weight: 700; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(243,156,18,0.4);
-        }
-        .certificate-btn:hover { transform: scale(1.05); box-shadow: 0 20px 50px rgba(243,156,18,0.6); }
-
-        .loading, .error { text-align: center; padding: 80px 40px; }
-        .loading-spinner { 
-            width: 60px; height: 60px; border: 6px solid #ecf0f1; 
-            border-top: 6px solid #3498db; border-radius: 50%; 
-            animation: spin 1s linear infinite; margin: 0 auto 30px;
+        .loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid #ffd93d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .debug-panel { 
-            background: #fff3cd; border: 1px solid #ffeaa7; 
-            padding: 20px; border-radius: 15px; margin: 20px 0; 
-            font-family: monospace; font-size: 13px; max-height: 200px; overflow-y: auto;
+        .error-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            color: white;
+            text-align: center;
+            padding: 40px;
         }
-
-        @media (max-width: 768px) { 
-            .container { padding: 15px; }
-            h1 { font-size: 2.2em; }
-            .lessons-container { padding: 25px 20px; }
-            .nav-buttons { flex-direction: column; }
-            .step-tracker { justify-content: flex-start; overflow-x: auto; padding: 10px 0; }
+        @media (max-width: 768px) {
+            .slide { padding: 20px; margin: 20px; }
+            h1 { font-size: 2em; }
+            p { font-size: 1.1em; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏠 Family Business</h1>
-            <p class="subtitle">بناء تطبيق تجارة إلكترونية + توصيل شامل من الصفر للنشر - خطوة بخطوة للمبتدئين</p>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <div class="step-tracker" id="stepTracker"></div>
-            <div id="userStatus"></div>
-            <button class="nav-btn" id="logoutBtn" style="display:none; max-width: none; margin-top: 15px;">🚪 خروج من الدورة</button>
-            <a href="https://wa.me/201234567890?text=مرحبا، أحتاج مساعدة في دورة Family Business - الدرس: [رقم الدرس]" 
-               class="nav-btn" target="_blank" style="background: #25D366; max-width: none; margin-top: 15px;">💬 دعم فوري واتساب</a>
-        </header>
-
-        <div id="loadingScreen" class="loading">
-            <div class="loading-spinner"></div>
-            <div>جاري التحقق من صلاحياتك للدورة...</div>
-            <div style="margin-top: 20px; font-size: 0.9em; color: #7f8c8d;">
-                إذا كانت هذه أول مرة، ستحتاج تفعيل الدورة من الإدارة
-            </div>
-        </div>
-
-        <div id="mainContent" class="hidden">
-            <div class="lessons-container">
-                <div class="current-lesson-header">
-                    <div class="lesson-icon" id="lessonIcon">📚</div>
-                    <div>
-                        <div class="lesson-title" id="lessonTitle">ابدأ من هنا</div>
-                        <div class="lesson-subtitle" id="lessonSubtitle">الدرس الحالي</div>
-                    </div>
-                </div>
-
-                <div id="lessonContent"></div>
-                
-                <div class="nav-buttons">
-                    <button class="nav-btn prev-btn" id="prevBtn">← الدرس السابق</button>
-                    <button class="nav-btn next-btn" id="nextBtn">الدرس التالي →</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="debugPanel" class="debug-panel hidden"></div>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <h2>جاري التحقق من تفعيل الكورس...</h2>
+        <p>الرجاء الانتظار...</p>
     </div>
 
-    <script>
-        // Firebase Config - عام ويعمل مع أي مشروع
+    <!-- Error Screen -->
+    <div class="error-screen" id="errorScreen">
+        <h1>❌ الكورس غير مفعّل</h1>
+        <p>هذا الكورس يتطلب تفعيل من قبل الإدارة.</p>
+        <p><strong>تواصل مع الإدارة: familybusiness@example.com</strong></p>
+        <button onclick="window.location.href='login.html'" class="link-btn" style="margin-top: 20px;">العودة لتسجيل الدخول</button>
+    </div>
+
+    <div class="progress-bar" id="progress"></div>
+    <div class="slide-counter" id="counter">1 / 48</div>
+
+    <!-- الشريحة 1: العنوان الرئيسي -->
+    <div class="slide-container" data-slide="1">
+        <div class="slide">
+            <h1>🚀 بناء موقعك الأول في أقل من ساعة!</h1>
+            <p>موقع بيع منتجات العناية بالشعر والبشرة</p>
+            <p class="highlight">Copy-Paste + فهم = موقع Live على الإنترنت!</p>
+            <p><strong>بدون خبرة سابقة • بدون شهور دراسة • نتيجة فورية</strong></p>
+        </div>
+    </div>
+
+    <!-- الشريحة 2: نظرة عامة -->
+    <div class="slide-container" data-slide="2">
+        <div class="slide">
+            <h2>📋 ما سنبنيه اليوم</h2>
+            <div class="highlight">
+                ✅ موقع بيع منتجات شعر وبشرة<br>
+                ✅ تسجيل دخول للعملاء<br>
+                ✅ حفظ الطلبيات في قاعدة بيانات<br>
+                ✅ نشر على GitHub Pages<br>
+                ✅ كل شيء Live على الإنترنت!
+            </div>
+        </div>
+    </div>
+
+    <!-- الشريحة 3: الخطة -->
+    <div class="slide-container" data-slide="3">
+        <div class="slide">
+            <h2>🗺️ الخطة الكاملة (5 دروس)</h2>
+            <ul style="text-align: right; font-size: 1.3em; line-height: 2;">
+                <li>درس 1: Perplexity AI + OneCompiler</li>
+                <li>درس 2: Firebase قاعدة البيانات</li>
+                <li>درس 3: Firebase Configuration</li>
+                <li>درس 4: ربط الموقع بـ Firebase</li>
+                <li>درس 5: GitHub Pages Live</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- الشريحة 4: الأدوات -->
+    <div class="slide-container" data-slide="4">
+        <div class="slide">
+            <h2>🛠️ الأدوات المجانية</h2>
+            <a href="https://perplexity.ai" class="link-btn" target="_blank">Perplexity AI</a>
+            <a href="https://onecompiler.com/html" class="link-btn" target="_blank">OneCompiler</a>
+            <a href="https://console.firebase.google.com" class="link-btn" target="_blank">Firebase Console</a>
+            <a href="https://github.com" class="link-btn" target="_blank">GitHub</a>
+        </div>
+    </div>
+
+    <!-- درس 1: Perplexity AI -->
+    <div class="slide-container" data-slide="5">
+        <div class="slide">
+            <h2>🎯 درس 1: Perplexity AI</h2>
+            <p>افتح <a href="https://perplexity.ai" target="_blank">perplexity.ai</a></p>
+            <div class="highlight">
+                اكتب بالضبط: <br>
+                <strong>"موقع بيع منتجات عناية شعر وبشرة HTML CSS JS بسيط مع صور وأزرار طلب"</strong>
+            </div>
+            <p>خد الكود اللي هيديهولك 👇</p>
+        </div>
+    </div>
+
+    <!-- باقي الشرائح تبقى كما هي تماماً (6-48) -->
+    <!-- الشريحة 6: مثال الكود من Perplexity -->
+    <div class="slide-container" data-slide="6">
+        <div class="slide">
+            <h2>💻 مثال الكود من Perplexity</h2>
+            <div class="code-box">
+&lt;!DOCTYPE html&gt;<br>
+&lt;html&gt;<br>
+&lt;head&gt;&lt;title&gt;عناية شعر&lt;/title&gt;&lt;/head&gt;<br>
+&lt;body&gt;<br>
+  &lt;h1&gt;منتجات عناية الشعر&lt;/h1&gt;<br>
+  &lt;img src="شامبو.jpg" width="200"&gt;<br>
+  &lt;p&gt;شامبو مغذي ٥٠ جنيه&lt;/p&gt;<br>
+  &lt;button onclick="alert('تم الطلب!')"&gt;اطلب الآن&lt;/button&gt;<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;
+            </div>
+        </div>
+    </div>
+
+    <!-- الشريحة 7: OneCompiler -->
+    <div class="slide-container" data-slide="7">
+        <div class="slide">
+            <h2>⚡ درس 1 - الخطوة 2: OneCompiler</h2>
+            <p>روح <a href="https://onecompiler.com/html" target="_blank">onecompiler.com/html</a></p>
+            <ol style="text-align: right; font-size: 1.3em;">
+                <li>انسخ الكود من Perplexity</li>
+                <li>الصقه في OneCompiler</li>
+                <li>اضغط Run</li>
+                <li>شوف النتيجة فورًا! 🎉</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- الشريحة 46: الختام -->
+    <div class="slide-container" data-slide="46">
+        <div class="slide">
+            <h1>🏆 مبروك!</h1>
+            <p>لقد بنيت موقعك الأول بنجاح!</p>
+            <div class="highlight">
+                🎓 الآن أنت مبرمج ويب<br>
+                💼 يمكنك بيع هذا الموقع<br>
+                🚀 جرب مواقع أكبر الآن<br>
+                📈 استمر في التعلم اليومي
+            </div>
+        </div>
+    </div>
+
+    <!-- الشريحة 47: مشاريع مقترحة -->
+    <div class="slide-container" data-slide="47">
+        <div class="slide">
+            <h2>🚀 مشاريع التدريب التالية</h2>
+            <ul style="text-align: right; font-size: 1.3em; line-height: 2;">
+                <li>موقع مطعم توصيل</li>
+                <li>تطبيق حجز صالون</li>
+                <li>متجر ملابس إلكتروني</li>
+                <li>نظام إدارة موظفين</li>
+            </ul>
+            <a href="https://perplexity.ai" class="link-btn" target="_blank">ابدأ مشروعك الجديد</a>
+        </div>
+    </div>
+
+    <!-- الشريحة 48: شكر -->
+    <div class="slide-container" data-slide="48">
+        <div class="slide">
+            <h1>شكرًا لك! 🌟</h1>
+            <p>الآن لديك موقع Live على الإنترنت</p>
+            <p><strong>شاركنا موقعك: familybusiness@example.com</strong></p>
+            <div style="font-size: 1.5em; margin-top: 30px;">
+                💻 مبرمج ويب جديد 🎉
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prev">السابق ←</button>
+        <button class="nav-btn" id="next">التالي →</button>
+    </div>
+
+    <script type="module">
+        // Firebase Config من مشروع kidsup-e998d
         const firebaseConfig = {
             apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
             authDomain: "kidsup-e998d.firebaseapp.com",
             projectId: "kidsup-e998d",
-            storageBucket: "kidsup-e998d.appspot.com",
+            storageBucket: "kidsup-e998d.firebasestorage.app",
             messagingSenderId: "959800471628",
-            appId: "1:959800471628:web:APP_ID_المناسب"
+            appId: "1:959800471628:web:51bfdc7a5209de7e7e44e9",
+            measurementId: "G-V97ETZX7K0"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // دروس محسنة للمبتدئين مع خطوات واضحة وأمثلة عامة
-        const lessons = [
-            {
-                icon: "🎯",
-                title: "الخطوة 1: فهم المشروع بالكامل",
-                subtitle: "ماذا سنبني بالضبط؟",
-                content: `
-                    <div class="action-steps">
-                        <h3>📋 قبل البدء - اعرف هدفك</h3>
-                        <ul class="step-list">
-                            <li>سنبني تطبيق <strong>تجارة إلكترونية + توصيل</strong> مثل Talabat + Jumia</li>
-                            <li>3 مستخدمين: <strong>عميل ✓ تاجر ✓ مندوب توصيل</strong></li>
-                            <li>يعمل على <strong>موبايل + كمبيوتر</strong> بدون تحميل</li>
-                            <li>مجاني 100% بـ <strong>Firebase + GitHub Pages</strong></li>
-                        </ul>
-                    </div>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <span class="feature-icon">👤</span>
-                            <h4>العميل</h4>
-                            <p>يتصفح المنتجات، يضع طلب، يدفع، يتابع التوصيل</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">🏪</span>
-                            <h4>التاجر</h4>
-                            <p>يضيف منتجات، يرى الطلبات، يحدد السعر والكمية</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">🚚</span>
-                            <h4>مندوب التوصيل</h4>
-                            <p>يختار الطلبات، يحدث الحالة، يستلم ويسلم</p>
-                        </div>
-                    </div>
+        // DOM Elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const errorScreen = document.getElementById('errorScreen');
 
-                    <div style="text-align: center; margin: 40px 0;">
-                        <a href="https://onecompiler.com/html" target="_blank" class="try-now">🚀 ابدأ التجربة الأولى</a>
-                    </div>
-                `,
-                quiz: [
-                    { q: "كم نوع مستخدم في النظام؟", options: ["2", "3", "4", "5"], correct: 1, explanation: "عميل + تاجر + مندوب توصيل = 3" },
-                    { q: "أين نختبر الكود الأول؟", options: ["GitHub", "Firebase", "OneCompiler", "VS Code"], correct: 2, explanation: "OneCompiler أسرع للمبتدئين" }
-                ]
-            },
-            {
-                icon: "💻",
-                title: "الخطوة 2: أول صفحة HTML + CSS جميلة",
-                subtitle: "انسخ → الصق → اعمل refresh",
-                content: `
-                    <div class="action-steps">
-                        <h3>🎨 خطواتك بالترتيب (5 دقائق فقط):</h3>
-                        <ul class="step-list">
-                            <li><strong>1️⃣</strong> افتح <a href="https://onecompiler.com/html" target="_blank">OneCompiler</a></li>
-                            <li><strong>2️⃣</strong> امسح كل الكود القديم</li>
-                            <li><strong>3️⃣</strong> انسخ الكود أدناه (اضغط الزر الأخضر)</li>
-                            <li><strong>4️⃣</strong> الصقه في OneCompiler</li>
-                            <li><strong>5️⃣</strong> اضغط Run → شوف النتيجة! 🎉</li>
-                        </ul>
-                    </div>
-
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ الكود كامل</button>
-                        <pre id="code1"><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="ar" dir="rtl"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;Family Business&lt;/title&gt;
-    &lt;style&gt;
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-        }
-        .app { 
-            background: white; padding: 40px; 
-            border-radius: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            max-width: 500px; width: 90%; text-align: center;
-        }
-        h1 { color: #2c3e50; margin-bottom: 25px; font-size: 2.5em; }
-        .role-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 30px 0; }
-        .role-btn { 
-            padding: 20px; border: none; border-radius: 20px; 
-            font-size: 1.1em; font-weight: bold; cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .client { background: linear-gradient(45deg, #e74c3c, #c0392b); color: white; }
-        .merchant { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
-        .delivery { background: linear-gradient(45deg, #27ae60, #229954); color: white; }
-        .role-btn:hover { transform: translateY(-5px) scale(1.05); }
-    &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div class="app"&gt;
-        &lt;h1&gt;🏠 Family Business&lt;/h1&gt;
-        &lt;p&gt;اختر دورك في النظام:&lt;/p&gt;
-        &lt;div class="role-buttons"&gt;
-            &lt;button class="role-btn client"&gt;👤 العميل&lt;/button&gt;
-            &lt;button class="role-btn merchant"&gt;🏪 التاجر&lt;/button&gt;
-            &lt;button class="role-btn delivery"&gt;🚚 مندوب التوصيل&lt;/button&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-                    </div>
-
-                    <div style="background: #d5f4e6; padding: 25px; border-radius: 20px; text-align: center; margin: 30px 0;">
-                        <h3>✅ ماذا سيحدث؟</h3>
-                        <p>ستشوف صفحة جميلة مع 3 أزرار ملونة! هذا أول تطبيق لك 🎉</p>
-                        <a href="https://onecompiler.com/html" target="_blank" class="try-now">جرب الآن مجاناً</a>
-                    </div>
-                `,
-                quiz: [
-                    { q: "بعد النسخ واللصق، ماذا نضغط؟", options: ["Save", "Run", "Share", "Download"], correct: 1, explanation: "اضغط Run لرؤية النتيجة" },
-                    { q: "كم زر سيظهر؟", options: ["2", "3", "4"], correct: 1, explanation: "3 أزرار للأدوار الثلاثة" }
-                ]
-            },
-            {
-                icon: "🔥",
-                title: "الخطوة 3: إعداد Firebase مجاناً",
-                subtitle: "5 دقائق لقاعدة بيانات قوية",
-                content: `
-                    <div class="action-steps">
-                        <h3>☁️ إعداد Firebase خطوة بخطوة:</h3>
-                        <ul class="step-list">
-                            <li><strong>1️⃣</strong> <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
-                            <li><strong>2️⃣</strong> اضغط "إنشاء مشروع" → اسم: <code>my-family-business</code></li>
-                            <li><strong>3️⃣</strong> فعّل <strong>Authentication</strong> → Email/Password</li>
-                            <li><strong>4️⃣</strong> فعّل <strong>Firestore Database</strong> → ابدأ في وضع الاختبار</li>
-                            <li><strong>5️⃣</strong> اضغط ⚙️ → Project Settings → نسخ Config</li>
-                        </ul>
-                    </div>
-
-                    <h3 style="margin: 30px 0 20px 0; color: #2c3e50;">📁 المجموعات التي سنحتاجها:</h3>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <span class="feature-icon">👥</span>
-                            <h4>users</h4>
-                            <p>بيانات المستخدمين والأدوار</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">📦</span>
-                            <h4>products</h4>
-                            <p>المنتجات والأسعار</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">📋</span>
-                            <h4>orders</h4>
-                            <p>الطلبات والحالة</p>
-                        </div>
-                    </div>
-                `,
-                quiz: [
-                    { q: "أول شيء نفعّله في Firebase؟", options: ["Firestore", "Authentication", "Hosting", "Storage"], correct: 1, explanation: "Authentication لتسجيل الدخول" },
-                    { q: "كم مجموعة Firestore نحتاج؟", options: ["2", "3", "5", "7"], correct: 2, explanation: "users + products + orders الأساسية" }
-                ]
-            },
-            {
-                icon: "⚙️",
-                title: "الخطوة 4: ربط Firebase مع HTML",
-                subtitle: "الكود السري اللي هيخلي كل حاجة تشتغل",
-                content: `
-                    <div class="action-steps">
-                        <h3>🔗 خطوات الربط بالترتيب:</h3>
-                        <ul class="step-list">
-                            <li>انسخ <strong>Firebase Config</strong> من المشروع الجديد</li>
-                            <li>ضع الكود في <code>&lt;script&gt;</code> قبل &lt;/body&gt;</li>
-                            <li>اكتب <code>firebase.initializeApp(config);</code></li>
-                            <li>اختبر بـ <code>console.log("Firebase جاهز!")</code></li>
-                        </ul>
-                    </div>
-
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ Firebase Config</button>
-                        <pre id="code2"><code>// ضع هذا قبل &lt;/body&gt; في صفحتك
-&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"&gt;&lt;/script&gt;
-&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"&gt;&lt;/script&gt;
-&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"&gt;&lt;/script&gt;
-
-&lt;script&gt;
-const firebaseConfig = {
-    // هنا Config مشروعك 👈 انسخه من Firebase Console
-    apiKey: "xxx",
-    authDomain: "xxx.firebaseapp.com",
-    projectId: "xxx",
-    // ... باقي الإعدادات
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-console.log("✅ Firebase جاهز للاستخدام!");
-&lt;/script&gt;</code></pre>
-                    </div>
-
-                    <div style="background: #e8f5e8; padding: 25px; border-radius: 20px; margin: 30px 0; text-align: center;">
-                        <h3>🔍 كيف تتأكد؟</h3>
-                        <p>اضغط F12 → Console → إذا ظهر "✅ Firebase جاهز" = تمام! 🎉</p>
-                    </div>
-                `,
-                quiz: [
-                    { q: "من أين نأخذ firebaseConfig؟", options: ["GitHub", "Firebase Settings", "OneCompiler", "Google"], correct: 1, explanation: "Project Settings في Firebase Console" },
-                    { q: "ماذا نكتب بعد الـ Config؟", options: ["db.initialize()", "firebase.initializeApp()", "auth.start()", "firestore.connect()"], correct: 1, explanation: "firebase.initializeApp(config)" }
-                ]
-            },
-            {
-                icon: "🔐",
-                title: "الخطوة 5: تسجيل الدخول + الأدوار",
-                subtitle: "نظام كامل للمستخدمين",
-                content: `
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ نظام Auth كامل</button>
-                        <pre id="code3"><code>// تسجيل مستخدم جديد مع دور
-async function register(email, password, role) {
-    try {
-        const user = await auth.createUserWithEmailAndPassword(email, password);
-        await db.collection('users').doc(user.user.uid).set({
-            email: email,
-            role: role, // 'client' or 'merchant' or 'delivery'
-            name: '',
-            phone: '',
-            joined: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        console.log('✅ تم التسجيل بنجاح!');
-    } catch(error) {
-        console.error('❌ خطأ:', error.message);
-    }
-}
-
-// تسجيل الدخول
-async function login(email, password) {
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        console.log('✅ تم تسجيل الدخول');
-    } catch(error) {
-        console.error('❌ خطأ تسجيل الدخول');
-    }
-}
-
-// قراءة بيانات المستخدم الحالي
-auth.onAuthStateChanged(user => {
-    if (user) {
-        db.collection('users').doc(user.uid).get().then(doc => {
-            if (doc.exists) {
-                const userData = doc.data();
-                console.log('👤 دورك:', userData.role);
-                // هنا نعرض الواجهة المناسبة للدور
-            }
-        });
-    }
-});</code></pre>
-                    </div>
-
-                    <h3 style="margin: 30px 0 20px 0;">🧪 اختبار سريع:</h3>
-                    <div style="background: #fff3cd; padding: 25px; border-radius: 20px;">
-                        <p><strong>1️⃣</strong> افتح Console (F12)<br>
-                        <strong>2️⃣</strong> اكتب: <code>register('test@test.com', '123456', 'client')</code><br>
-                        <strong>3️⃣</strong> Enter → شوف النتيجة!</p>
-                    </div>
-                `,
-                quiz: [
-                    { q: "أين نحفظ دور المستخدم؟", options: ["localStorage", "Firestore users", "sessionStorage", "cookies"], correct: 1, explanation: "في Firestore collection users" },
-                    { q: "كيف نعرف المستخدم مسجل؟", options: ["auth.onAuthStateChanged", "user.login()", "db.getUser()", "firebase.check()"], correct: 0, explanation: "onAuthStateChanged تتابع الحالة" }
-                ]
-            },
-            {
-                icon: "⚡",
-                title: "الخطوة 6: واجهة Real-time تفاعلية",
-                subtitle: "البيانات تتحدث لوحدها!",
-                content: `
-                    <div class="action-steps">
-                        <h3>🔥 Real-time Database:</h3>
-                        <ul class="step-list">
-                            <li>كل تغيير يظهر فوراً للجميع</li>
-                            <li>يعمل بدون إنترنت ويحفظ التغييرات</li>
-                            <li>تحديث تلقائي بدون Refresh</li>
-                        </ul>
-                    </div>
-
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ Real-time Orders</button>
-                        <pre id="code4"><code>// عرض الطلبات الجديدة فوراً
-db.collection('orders')
-    .orderBy('timestamp', 'desc')
-    .limit(10)
-    .onSnapshot(snapshot => {
-        const ordersContainer = document.getElementById('orders');
-        ordersContainer.innerHTML = '';
-        
-        snapshot.forEach(doc => {
-            const order = doc.data();
-            ordersContainer.innerHTML += `
-                &lt;div class="order-card" style="padding:15px; margin:10px 0; background:#f8f9fa; border-radius:15px;"&gt;
-                    #${doc.id} - ${order.customer} | ${order.status} | ${order.total} جنيه
-                &lt;/div&gt;
-            `;
-        });
-    });</code></pre>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 30px 0;">
-                        <div style="background: #e8f8f5; padding: 25px; border-radius: 20px;">
-                            <h4>🌟 للعميل:</h4>
-                            <p>طلبك يظهر فوراً ويتابع الحالة</p>
-                        </div>
-                        <div style="background: #fef5e7; padding: 25px; border-radius: 20px;">
-                            <h4>🏪 للتاجر:</h4>
-                            <p>طلب جديد = إشعار فوري</p>
-                        </div>
-                        <div style="background: #e8f5e8; padding: 25px; border-radius: 20px;">
-                            <h4>🚚 للمندوب:</h4>
-                            <p>الطلبات المتاحة تظهر تلقائياً</p>
-                        </div>
-                    </div>
-                `,
-                quiz: [
-                    { q: "ما هي onSnapshot؟", options: ["قراءة مرة واحدة", "استماع مستمر", "حذف البيانات", "إضافة"], correct: 1, explanation: "تستمع للتغييرات وتحدث الشاشة" },
-                    { q: "هل تحتاج Refresh؟", options: ["نعم", "لا", "أحياناً"], correct: 1, explanation: "Real-time = تحديث تلقائي" }
-                ]
-            },
-            {
-                icon: "🚀",
-                title: "الخطوة 7: نشر مجاني على GitHub Pages",
-                subtitle: "تطبيقك على الإنترنت في 3 دقائق",
-                content: `
-                    <div class="action-steps">
-                        <h3>🌐 خطوات النشر بالترتيب:</h3>
-                        <ul class="step-list">
-                            <li><strong>1️⃣</strong> <a href="https://github.com" target="_blank">GitHub.com</a> → New Repository</li>
-                            <li><strong>2️⃣</strong> اسم: <code>my-family-business</code></li>
-                            <li><strong>3️⃣</strong> ارفع ملف <code>index.html</code> (صفحتك)</li>
-                            <li><strong>4️⃣</strong> Settings → Pages → Source: Deploy from "main" branch</li>
-                            <li><strong>5️⃣</strong> انتظر 2 دقيقة → تطبيقك جاهز! 🎉</li>
-                        </ul>
-                    </div>
-
-                    <div style="background: #e3f2fd; padding: 30px; border-radius: 20px; text-align: center; margin: 30px 0;">
-                        <h3>🔗 الرابط النهائي:</h3>
-                        <code style="font-size: 1.4em; background: white; padding: 15px; border-radius: 10px; display: block; margin: 20px auto; max-width: 500px;">
-                            https://YOUR_USERNAME.github.io/my-family-business/
-                        </code>
-                        <p><strong>مثال:</strong> https://ahmed123.github.io/my-family-business/</p>
-                    </div>
-                `,
-                quiz: [
-                    { q: "أين نفعّل GitHub Pages؟", options: ["Home", "Settings", "Issues", "Pull Requests"], correct: 1, explanation: "Settings → Pages" },
-                    { q: "كم نستنى بعد الرفع؟", options: ["10 ثواني", "2 دقيقة", "ساعة"], correct: 1, explanation: "GitHub يحتاج وقت للنشر" }
-                ]
-            },
-            {
-                icon: "📊",
-                title: "الخطوة 8: لوحة تحكم Admin",
-                subtitle: "مراقبة كل شيء من مكان واحد",
-                content: `
-                    <h3>👑 ماذا يشاهده الـ Admin؟</h3>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <span class="feature-icon">📈</span>
-                            <h4>إحصائيات</h4>
-                            <p>عدد المستخدمين، الطلبات، الإيرادات</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">🔧</span>
-                            <h4>إدارة</h4>
-                            <p>تعديل/حذف مستخدمين وطلبات</p>
-                        </div>
-                        <div class="feature-card">
-                            <span class="feature-icon">📱</span>
-                            <h4>Real-time</h4>
-                            <p>تحديث فوري لكل النشاط</p>
-                        </div>
-                    </div>
-
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ Admin Check</button>
-                        <pre id="code5"><code>// فحص صلاحية الـ Admin
-auth.onAuthStateChanged(async user => {
-    if (user) {
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        if (userDoc.data().role !== 'admin') {
-            alert('❌ صلاحيات Admin مطلوبة');
-            window.location.href = '/';
-        } else {
-            loadAdminDashboard();
-        }
-    }
-});
-
-async function loadAdminDashboard() {
-    // تحميل الإحصائيات
-    const usersCount = await db.collection('users').get().then(s => s.size);
-    const ordersCount = await db.collection('orders').get().then(s => s.size);
-    
-    document.getElementById('stats').innerHTML = `
-        👥 المستخدمين: ${usersCount} | 📋 الطلبات: ${ordersCount}
-    `;
-}</code></pre>
-                    </div>
-                `,
-                quiz: [
-                    { q: "كيف نحمي صفحة Admin؟", options: ["if(role=='admin')", "password", "role check", "login"], correct: 2, explanation: "نتأكد من role === 'admin'" },
-                    { q: "من أين نحسب عدد المستخدمين؟", options: ["localStorage", "db.collection('users').get()", "auth.users", "session"], correct: 1, explanation: "Firestore collection users" }
-                ]
-            },
-            {
-                icon: "🛠️",
-                title: "الخطوة 9: حل مشاكل شائعة 100%",
-                subtitle: "كل المشاكل وحلولها السريعة",
-                content: `
-                    <h3>🚨 أكثر 8 مشاكل + الحل في ثانية:</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin: 25px 0;">
-                        <div style="background: #ffeaa7; padding: 25px; border-radius: 20px;">
-                            <h4>❌ Firebase لا يعمل</h4>
-                            <p><strong>الحل:</strong> F12 → Console → شوف الخطأ → انسخ للواتساب</p>
-                        </div>
-                        <div style="background: #fab1a0; padding: 25px; border-radius: 20px;">
-                            <h4>❌ Permission Denied</h4>
-                            <p><strong>الحل:</strong> Firestore Rules → ابدأ في test mode (30 يوم)</p>
-                        </div>
-                        <div style="background: #a8e6cf; padding: 25px; border-radius: 20px;">
-                            <h4>✅ Debug سريع:</h4>
-                            <p>F12 → Console → Refresh → انسخ كل الأخطاء</p>
-                        </div>
-                        <div style="background: #dcedc1; padding: 25px; border-radius: 20px;">
-                            <h4>🔥 الحل السحري:</h4>
-                            <p><code>firebase.firestore().enablePersistence()</code></p>
-                        </div>
-                    </div>
-
-                    <div class="code-hero">
-                        <button class="copy-hero" onclick="copyCode(this)">📋 انسخ Firestore Rules</button>
-                        <pre id="code6"><code>rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Test mode - 30 يوم كافية للتطوير
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2026, 12, 31);
-    }
-    
-    // بعد 30 يوم - أمان كامل
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}</code></pre>
-                    </div>
-                `,
-                quiz: [
-                    { q: "Permission Denied = ؟", options: ["مشكلة إنترنت", "Firestore Rules", "Config خطأ", "لا إنترنت"], correct: 1, explanation: "Rules تحتاج test mode" },
-                    { q: "أين نشوف الأخطاء؟", options: ["F12 Console", "Firebase Logs", "GitHub", "WhatsApp"], correct: 0, explanation: "F12 → Console أفضل مكان" }
-                ]
-            },
-            {
-                icon: "🏆",
-                title: "الخطوة 10: شهادة + مشروعك النهائي",
-                subtitle: "مبروك! أنت مطور Full-stack",
-                content: `
-                    <div style="text-align: center; padding: 50px 30px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); border-radius: 25px; margin: 30px 0;">
-                        <h2 style="font-size: 2.5em; margin-bottom: 20px;">🎉 مبروك الإنجاز الكبير!</h2>
-                        <p style="font-size: 1.3em; color: #2c3e50; margin-bottom: 30px;">
-                            لقد بنيت تطبيق تجارة إلكترونية كامل من الصفر! 🚀
-                        </p>
-                        <button class="certificate-btn" onclick="generateCertificate()">
-                            📜 احصل على شهادتك الرسمية الآن
-                        </button>
-                    </div>
-
-                    <h3 style="margin: 40px 0 25px 0;">✅ ماذا تعلمت؟</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                        <div style="text-align: center; padding: 25px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                            <span style="font-size: 3em; display: block; margin-bottom: 15px;">💻</span>
-                            <h4>HTML/CSS/JS</h4>
-                            <p>تصميم موبايل-first جميل</p>
-                        </div>
-                        <div style="text-align: center; padding: 25px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                            <span style="font-size: 3em; display: block; margin-bottom: 15px;">🔥</span>
-                            <h4>Firebase</h4>
-                            <p>Database + Auth + Real-time</p>
-                        </div>
-                        <div style="text-align: center; padding: 25px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                            <span style="font-size: 3em; display: block; margin-bottom: 15px;">🌐</span>
-                            <h4>GitHub Pages</h4>
-                            <p>نشر مجاني على الإنترنت</p>
-                        </div>
-                    </div>
-
-                    <div style="background: #e8f5e8; padding: 30px; border-radius: 20px; margin: 40px 0; text-align: center;">
-                        <h3>🚀 الخطوة التالية؟</h3>
-                        <p>أضف الدفع الإلكتروني + إشعارات + خرائط Google Maps!</p>
-                        <a href="https://wa.me/201234567890?text=أكملت الدورة! أحتاج المرحلة المتقدمة" class="try-now" style="font-size: 1.2em; padding: 20px 50px;" target="_blank">المرحلة المتقدمة</a>
-                    </div>
-                `,
-                quiz: [
-                    { q: "ماذا بنينا؟", options: ["صفحة واحدة", "تطبيق كامل", "لعبة", "مدونة"], correct: 1, explanation: "تطبيق تجارة + توصيل كامل" },
-                    { q: "هل يعمل على الموبايل؟", options: ["لا", "نعم", "جزئياً"], correct: 1, explanation: "Responsive 100% موبايل-first" }
-                ]
-            }
-        ];
-
-        let currentLessonIndex = 0;
-        let progressData = {};
-        let currentUser = null;
-        const isDemoMode = new URLSearchParams(window.location.search).get('demo') === '1';
-
-        // Initialize App
-        window.onload = initializeCourse;
-
-        function initializeCourse() {
-            logDebug('🚀 بدء تهيئة الدورة...', { demo: isDemoMode });
-            
-            updateStepTracker();
-            
-            if (isDemoMode) {
-                logDebug('✅ وضع التجربة المجاني مفعّل');
-                startCourseDemo();
-                return;
+        // Course verification function
+        async function checkCourseAccess(user) {
+            if (!user) {
+                showError('يرجى تسجيل الدخول أولاً');
+                return false;
             }
 
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    currentUser = user;
-                    logDebug('👤 مستخدم مسجل:', user.uid?.substring(0, 8));
-                    
-                    try {
-                        const userDoc = await db.collection('users').doc(user.uid).get();
-                        if (userDoc.exists && userDoc.data().courseActive) {
-                            progressData = userDoc.data().progress || {};
-                            document.getElementById('userStatus').innerHTML = 
-                                `<span style="color: #27ae60; font-weight: 700;">✅ مرحباً ${userDoc.data().name || 'بطل البرمجة'}!</span> 
-                                 تقدمك: <strong>${Math.round(Object.values(progressData).filter(Boolean).length / lessons.length * 100)}%</strong>`;
-                            document.getElementById('logoutBtn').style.display = 'inline-block';
-                            startCourseDemo();
-                        } else {
-                            showAccessError('الدورة غير مفعّلة لك. تواصل مع الإدارة للتفعيل.');
-                        }
-                    } catch (e) {
-                        logDebug('❌ خطأ تحميل بيانات المستخدم:', e.message);
-                        showAccessError('خطأ في تحميل بياناتك. جرب تسجيل خروج/دخول.');
+            try {
+                // تحقق من تفعيل الكورس في Firestore
+                // المسار: users/{userId}/courses/programming-course
+                const courseDoc = doc(db, 'users', user.uid, 'courses', 'programming-course');
+                const courseSnap = await getDoc(courseDoc);
+                
+                if (courseSnap.exists()) {
+                    const courseData = courseSnap.data();
+                    if (courseData.courseActive === true) {
+                        console.log('✅ الكورس مفعّل للمستخدم:', user.uid);
+                        return true;
                     }
-                } else {
-                    showAccessError('يرجى <a href="/login.html" style="color: #3498db;">تسجيل الدخول</a> للبدء');
                 }
+                
+                console.log('❌ الكورس غير مفعّل للمستخدم:', user.uid);
+                showError('هذا الكورس غير مفعّل. يجب تفعيله من لوحة تحكم الإدارة.');
+                return false;
+                
+            } catch (error) {
+                console.error('خطأ في التحقق من الكورس:', error);
+                showError('حدث خطأ في التحقق من تفعيل الكورس');
+                return false;
+            }
+        }
+
+        // Show error screen
+        function showError(message) {
+            loadingScreen.classList.add('hidden');
+            errorScreen.style.display = 'flex';
+            errorScreen.querySelector('p').textContent = message;
+        }
+
+        // Hide loading and show course
+        function showCourse() {
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                initializeCourse();
+            }, 500);
+        }
+
+        // Initialize course slides
+        function initializeCourse() {
+            let currentSlide = 1;
+            const totalSlides = 48;
+            const containers = document.querySelectorAll('.slide-container');
+
+            function showSlide(n) {
+                containers.forEach((container, index) => {
+                    container.classList.toggle('active', index + 1 === n);
+                });
+                document.getElementById('counter').textContent = `${n} / ${totalSlides}`;
+                document.getElementById('progress').style.width = `${(n / totalSlides) * 100}%`;
+                currentSlide = n;
+            }
+
+            document.getElementById('next').addEventListener('click', () => {
+                if (currentSlide < totalSlides) showSlide(currentSlide + 1);
             });
-        }
 
-        function startCourseDemo() {
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('mainContent').classList.remove('hidden');
-            loadSavedProgress();
-            renderCurrentLesson();
-        }
-
-        function updateStepTracker() {
-            const tracker = document.getElementById('stepTracker');
-            tracker.innerHTML = lessons.map((lesson, i) => 
-                `<div class="step-item ${i === currentLessonIndex ? 'active' : progressData[i] ? 'completed' : ''}">
-                    <span class="step-number">${i + 1}</span>
-                    ${lesson.title}
-                </div>`
-            ).join('');
-        }
-
-        function renderCurrentLesson() {
-            const lesson = lessons[currentLessonIndex];
-            document.getElementById('lessonIcon').textContent = lesson.icon;
-            document.getElementById('lessonTitle').textContent = lesson.title;
-            document.getElementById('lessonSubtitle').textContent = lesson.subtitle;
-            document.getElementById('lessonContent').innerHTML = lesson.content;
-            
-            attachCopyListeners();
-            attachQuizHandlers();
-            
-            // Update progress
-            const progress = Math.round(Object.values(progressData).filter(Boolean).length / lessons.length * 100);
-            document.getElementById('progressBar').style.width = progress + '%';
-            
-            updateNavigation();
-            updateStepTracker();
-            
-            // Smooth scroll
-            document.querySelector('.lessons-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function copyCode(button) {
-            const codeBlock = button.nextElementSibling.querySelector('pre') || button.parentElement.querySelector('pre');
-            const codeText = codeBlock ? codeBlock.textContent : button.parentElement.textContent;
-            
-            navigator.clipboard.writeText(codeText).then(() => {
-                const originalText = button.textContent;
-                button.textContent = '✅ تم النسخ!';
-                button.style.background = '#27ae60';
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '';
-                }, 2000);
-            }).catch(err => {
-                console.error('فشل النسخ:', err);
-                alert('خطأ في النسخ! حدد الكود يدوياً');
+            document.getElementById('prev').addEventListener('click', () => {
+                if (currentSlide > 1) showSlide(currentSlide - 1);
             });
-        }
 
-        function attachCopyListeners() {
-            document.querySelectorAll('.copy-hero').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    copyCode(btn);
-                };
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') document.getElementById('next').click();
+                if (e.key === 'ArrowLeft') document.getElementById('prev').click();
             });
+
+            // ابدأ بالشريحة الأولى
+            showSlide(1);
         }
 
-        function attachQuizHandlers() {
-            // Quiz functionality will be added here
-            document.querySelectorAll('.quiz-option')?.forEach(option => {
-                option.onclick = () => {
-                    // Quiz logic
-                };
-            });
-        }
-
-        function updateNavigation() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.disabled = currentLessonIndex === 0;
-            nextBtn.disabled = currentLessonIndex === lessons.length - 1;
-            
-            if (currentLessonIndex === lessons.length - 1) {
-                nextBtn.textContent = '🎉 انتهاء الدورة';
-                nextBtn.style.background = 'linear-gradient(45deg, #f39c12, #e67e22)';
-            } else {
-                nextBtn.textContent = 'الدرس التالي →';
+        // Monitor authentication state
+        onAuthStateChanged(auth, async (user) => {
+            if (await checkCourseAccess(user)) {
+                showCourse();
             }
-        }
-
-        // Navigation
-        document.getElementById('prevBtn').onclick = () => {
-            if (currentLessonIndex > 0) {
-                currentLessonIndex--;
-                progressData[currentLessonIndex + 1] = true;
-                saveProgress();
-                renderCurrentLesson();
-            }
-        };
-
-        document.getElementById('nextBtn').onclick = () => {
-            if (currentLessonIndex < lessons.length - 1) {
-                progressData[currentLessonIndex] = true;
-                currentLessonIndex++;
-                saveProgress();
-                renderCurrentLesson();
-            }
-        };
-
-        function saveProgress() {
-            progressData[currentLessonIndex] = true;
-            localStorage.setItem('familyBusinessProgress', JSON.stringify(progressData));
-            
-            if (!isDemoMode && currentUser) {
-                db.collection('users').doc(currentUser.uid).update({
-                    'progress': progressData,
-                    'courseProgress': Object.values(progressData).filter(Boolean).length,
-                    'lastLesson': currentLessonIndex
-                }).catch(e => logDebug('خطأ حفظ:', e.message));
-            }
-        }
-
-        function loadSavedProgress() {
-            const saved = localStorage.getItem('familyBusinessProgress');
-            if (saved) {
-                progressData = JSON.parse(saved);
-                currentLessonIndex = progressData.lastLesson || 0;
-            }
-        }
-
-        // Certificate Generation
-        async function generateCertificate() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape' });
-            
-            let traineeName = 'المتدرب المحترف';
-            if (currentUser && !isDemoMode) {
-                try {
-                    const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                    traineeName = userDoc.data().name || currentUser.email.split('@')[0];
-                } catch(e) {}
-            }
-            
-            doc.setFontSize(30);
-            doc.text('🏆 شهادة إتمام دورة Family Business 🏆', 105, 40, { align: 'center' });
-            
-            doc.setFontSize(20);
-            doc.text('تم إكمال جميع الدروس بنجاح ممتاز', 105, 80, { align: 'center' });
-            
-            doc.setFontSize(18);
-            doc.text(`الاسم: ${traineeName}`, 105, 110, { align: 'center' });
-            doc.text(`التاريخ: ${new Date().toLocaleDateString('ar-EG')}`, 105, 130, { align: 'center' });
-            
-            doc.text('تم تطوير تطبيق تجارة إلكترونية كامل مع:', 105, 160, { align: 'center' });
-            doc.setFontSize(14);
-            doc.text('• Firebase Real-time Database', 105, 175, { align: 'center' });
-            doc.text('• Authentication & Roles System', 105, 185, { align: 'center' });
-            doc.text('• GitHub Pages Deployment', 105, 195, { align: 'center' });
-            
-            doc.save(`شهادة-Family-Business-${traineeName.replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}.pdf`);
-        }
-
-        document.getElementById('logoutBtn').onclick = () => {
-            auth.signOut().then(() => location.reload());
-        };
-
-        function logDebug(...args) {
-            const debugDiv = document.getElementById('debugPanel');
-            debugDiv.innerHTML += `[${new Date().toLocaleTimeString('ar-EG')}] ${args.join(' ')}<br>`;
-            debugDiv.scrollTop = debugDiv.scrollHeight;
-            console.log(...args);
-        }
-
-        function showAccessError(message) {
-            document.getElementById('loadingScreen').innerHTML = `
-                <div style="max-width: 500px; margin: 0 auto;">
-                    <div style="font-size: 4em; margin-bottom: 20px;">🔒</div>
-                    <h2 style="color: #e74c3c; margin-bottom: 20px;">${message}</h2>
-                    <p style="color: #7f8c8d; margin-bottom: 30px;">
-                        جرب وضع التجربة المجاني: <br>
-                        <code style="background: #ecf0f1; padding: 10px 20px; border-radius: 10px; font-size: 1.1em;">
-                            ${window.location.href.split('?')[0]}?demo=1
-                        </code>
-                    </p>
-                    <a href="?demo=1" class="try-now" style="font-size: 1.2em;">🚀 تجربة مجانية الآن</a>
-                </div>
-            `;
-            document.getElementById('debugPanel').classList.remove('hidden');
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') document.getElementById('nextBtn').click();
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') document.getElementById('prevBtn').click();
         });
 
-        logDebug('✅ الكود جاهز 100% وخالي من الأخطاء');
+        // إذا لم يكن هناك مستخدم مسجل دخول، اعرض شاشة الخطأ
+        console.log('جاري التحقق من حالة تسجيل الدخول...');
     </script>
 </body>
-    </html>
+</html>
