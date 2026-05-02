@@ -1,456 +1,543 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كورس بناء موقع بيع منتجات العناية - Family Business</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .slide-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: translateX(100px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .slide-container.active {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .slide {
-            max-width: 900px;
-            max-height: 80vh;
-            padding: 40px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
-            text-align: center;
-            animation: slideIn 1s ease-out;
-        }
-        @keyframes slideIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        h1 { font-size: 3em; margin-bottom: 20px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        h2 { font-size: 2.2em; margin: 25px 0; color: #ffd93d; }
-        p { font-size: 1.3em; line-height: 1.7; margin: 20px 0; }
-        .highlight { 
-            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            color: #333;
-            font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .code-box {
-            background: #1a1a2e;
-            color: #00ff88;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            overflow-x: auto;
-            border-left: 5px solid #00ff88;
-            box-shadow: inset 0 0 20px rgba(0,255,136,0.1);
-        }
-        .link-btn {
-            display: inline-block;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-            padding: 15px 30px;
-            margin: 15px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .link-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .nav-buttons {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 1000;
-        }
-        .nav-btn {
-            padding: 15px 25px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-        .nav-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
-        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .slide-counter {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: rgba(0,0,0,0.5);
-            color: #ffd93d;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-            transition: width 0.5s ease;
-        }
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-        .loading-screen.hidden { opacity: 0; pointer-events: none; }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top: 5px solid #ffd93d;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .error-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            color: white;
-            text-align: center;
-            padding: 40px;
-        }
-        @media (max-width: 768px) {
-            .slide { padding: 20px; margin: 20px; }
-            h1 { font-size: 2em; }
-            p { font-size: 1.1em; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كورس بناء المشاريع بالذكاء الاصطناعي</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',Tahoma,sans-serif;
+}
+
+body{
+background:#f8f6ff;
+overflow-x:hidden;
+color:#222;
+}
+
+.loading-screen,
+.error-screen,
+.certificate-screen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+.loading-screen{
+background:linear-gradient(135deg,#f6d6ff,#dfe9ff);
+}
+
+.error-screen{
+background:#111;
+color:#fff;
+display:none;
+text-align:center;
+padding:20px;
+}
+
+.certificate-screen{
+background:rgba(0,0,0,0.9);
+display:none;
+padding:20px;
+}
+
+.spinner{
+width:60px;
+height:60px;
+border:6px solid rgba(255,255,255,0.3);
+border-top:6px solid #7b4dff;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:20px;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg)}
+}
+
+.slide-container{
+display:none;
+min-height:100vh;
+padding:40px 20px;
+align-items:center;
+justify-content:center;
+}
+
+.slide-container.active{
+display:flex;
+animation:fade 0.5s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.slide{
+max-width:900px;
+width:100%;
+background:#fff;
+padding:40px;
+border-radius:30px;
+box-shadow:0 15px 50px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+h1{
+font-size:48px;
+margin-bottom:20px;
+color:#6a39ff;
+}
+
+h2{
+font-size:36px;
+margin-bottom:20px;
+color:#ff4f8b;
+}
+
+p{
+font-size:22px;
+line-height:1.8;
+margin-bottom:20px;
+}
+
+.highlight{
+background:linear-gradient(135deg,#ffe7f1,#ede4ff);
+padding:25px;
+border-radius:20px;
+margin-top:20px;
+font-size:24px;
+font-weight:bold;
+}
+
+.btn{
+background:linear-gradient(135deg,#7b4dff,#ff4f8b);
+color:#fff;
+padding:16px 30px;
+border:none;
+border-radius:50px;
+font-size:20px;
+cursor:pointer;
+margin:10px;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:translateY(-4px);
+}
+
+.nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:10px;
+z-index:999;
+}
+
+.progress{
+position:fixed;
+top:0;
+left:0;
+height:6px;
+background:linear-gradient(90deg,#7b4dff,#ff4f8b);
+width:0;
+transition:0.3s;
+z-index:999;
+}
+
+.counter{
+position:fixed;
+top:20px;
+left:20px;
+background:#fff;
+padding:10px 20px;
+border-radius:50px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+font-weight:bold;
+z-index:999;
+}
+
+ul{
+text-align:right;
+margin-top:20px;
+line-height:2.2;
+font-size:22px;
+}
+
+.certificate-card{
+background:#fff;
+color:#222;
+padding:40px;
+border-radius:25px;
+text-align:center;
+max-width:700px;
+width:100%;
+}
+
+.certificate-title{
+font-size:42px;
+color:#7b4dff;
+margin-bottom:20px;
+}
+
+.badge{
+display:inline-block;
+background:#f3ebff;
+color:#7b4dff;
+padding:10px 20px;
+border-radius:50px;
+margin-top:15px;
+font-weight:bold;
+}
+
+@media(max-width:768px){
+.slide{
+padding:25px;
+}
+
+h1{
+font-size:34px;
+}
+
+h2{
+font-size:28px;
+}
+
+p,ul{
+font-size:18px;
+}
+}
+</style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="spinner"></div>
-        <h2>جاري التحقق من تفعيل الكورس...</h2>
-        <p>الرجاء الانتظار...</p>
-    </div>
 
-    <!-- Error Screen -->
-    <div class="error-screen" id="errorScreen">
-        <h1>❌ الكورس غير مفعّل</h1>
-        <p>هذا الكورس يتطلب تفعيل من قبل الإدارة.</p>
-        <p><strong>تواصل مع الإدارة: familybusiness@example.com</strong></p>
-        <button onclick="window.location.href='login.html'" class="link-btn" style="margin-top: 20px;">العودة لتسجيل الدخول</button>
-    </div>
+<div class="loading-screen" id="loadingScreen">
+<div class="spinner"></div>
+<h2>جاري تجهيز الكورس...</h2>
+<p>لحظات ويتم فتح المحتوى ✨</p>
+</div>
 
-    <div class="progress-bar" id="progress"></div>
-    <div class="slide-counter" id="counter">1 / 48</div>
+<div class="error-screen" id="errorScreen">
+<h1>❌ الكورس غير مفعل</h1>
+<p id="errorMessage">يجب تفعيل الكورس من الإدارة أولًا.</p>
+<button class="btn" onclick="window.location.href='login.html'">العودة لتسجيل الدخول</button>
+</div>
 
-    <!-- الشريحة 1: العنوان الرئيسي -->
-    <div class="slide-container" data-slide="1">
-        <div class="slide">
-            <h1>🚀 بناء موقعك الأول في أقل من ساعة!</h1>
-            <p>موقع بيع منتجات العناية بالشعر والبشرة</p>
-            <p class="highlight">Copy-Paste + فهم = موقع Live على الإنترنت!</p>
-            <p><strong>بدون خبرة سابقة • بدون شهور دراسة • نتيجة فورية</strong></p>
-        </div>
-    </div>
+<div class="certificate-screen" id="certificateScreen">
+<div class="certificate-card">
+<div class="certificate-title">🎓 شهادة إتمام الكورس</div>
+<h2 id="studentName">اسم المتدربة</h2>
+<p>أتمت بنجاح كورس بناء التطبيقات والمشاريع بالذكاء الاصطناعي</p>
+<div class="badge">AI Business Course</div>
+<br><br>
+<button class="btn" id="shareBtn">📲 مشاركة الشهادة على فيسبوك</button>
+<button class="btn" onclick="closeCertificate()">إغلاق</button>
+</div>
+</div>
 
-    <!-- الشريحة 2: نظرة عامة -->
-    <div class="slide-container" data-slide="2">
-        <div class="slide">
-            <h2>📋 ما سنبنيه اليوم</h2>
-            <div class="highlight">
-                ✅ موقع بيع منتجات شعر وبشرة<br>
-                ✅ تسجيل دخول للعملاء<br>
-                ✅ حفظ الطلبيات في قاعدة بيانات<br>
-                ✅ نشر على GitHub Pages<br>
-                ✅ كل شيء Live على الإنترنت!
-            </div>
-        </div>
-    </div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 10</div>
 
-    <!-- الشريحة 3: الخطة -->
-    <div class="slide-container" data-slide="3">
-        <div class="slide">
-            <h2>🗺️ الخطة الكاملة (5 دروس)</h2>
-            <ul style="text-align: right; font-size: 1.3em; line-height: 2;">
-                <li>درس 1: Perplexity AI + OneCompiler</li>
-                <li>درس 2: Firebase قاعدة البيانات</li>
-                <li>درس 3: Firebase Configuration</li>
-                <li>درس 4: ربط الموقع بـ Firebase</li>
-                <li>درس 5: GitHub Pages Live</li>
-            </ul>
-        </div>
-    </div>
+<!-- المرحلة 1 -->
+<div class="slide-container active">
+<div class="slide">
+<h1>💛 ابنِ مشروعك من موبايلك فقط</h1>
+<p>
+مش لازم تكوني مبرمجة عشان تعملي تطبيق حقيقي.
+</p>
+<div class="highlight">
+في الكورس ده هتتعلمي تبني مشروع كامل باستخدام الذكاء الاصطناعي خطوة بخطوة.
+</div>
+</div>
+</div>
 
-    <!-- الشريحة 4: الأدوات -->
-    <div class="slide-container" data-slide="4">
-        <div class="slide">
-            <h2>🛠️ الأدوات المجانية</h2>
-            <a href="https://perplexity.ai" class="link-btn" target="_blank">Perplexity AI</a>
-            <a href="https://onecompiler.com/html" class="link-btn" target="_blank">OneCompiler</a>
-            <a href="https://console.firebase.google.com" class="link-btn" target="_blank">Firebase Console</a>
-            <a href="https://github.com" class="link-btn" target="_blank">GitHub</a>
-        </div>
-    </div>
+<!-- المرحلة 2 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🎯 اختاري فكرة مشروعك</h2>
+<p>
+ابدئي بفكرة الناس محتاجاها فعلًا.
+</p>
+<ul>
+<li>حجز كوافير منزلي</li>
+<li>طلب أنبوبة</li>
+<li>توصيل قهوة</li>
+<li>غسيل سيارات</li>
+<li>خدمات منزلية</li>
+</ul>
+</div>
+</div>
 
-    <!-- درس 1: Perplexity AI -->
-    <div class="slide-container" data-slide="5">
-        <div class="slide">
-            <h2>🎯 درس 1: Perplexity AI</h2>
-            <p>افتح <a href="https://perplexity.ai" target="_blank">perplexity.ai</a></p>
-            <div class="highlight">
-                اكتب بالضبط: <br>
-                <strong>"موقع بيع منتجات عناية شعر وبشرة HTML CSS JS بسيط مع صور وأزرار طلب"</strong>
-            </div>
-            <p>خد الكود اللي هيديهولك 👇</p>
-        </div>
-    </div>
+<!-- المرحلة 3 -->
+<div class="slide-container">
+<div class="slide">
+<h2>✨ خلي الذكاء الاصطناعي يبني التطبيق</h2>
+<p>
+افتحي ChatGPT أو Perplexity واكتبي وصف التطبيق.
+</p>
+<div class="highlight">
+انسخي الكود → الصقيه → شوفي التطبيق يشتغل فورًا 🎉
+</div>
+</div>
+</div>
 
-    <!-- باقي الشرائح تبقى كما هي تماماً (6-48) -->
-    <!-- الشريحة 6: مثال الكود من Perplexity -->
-    <div class="slide-container" data-slide="6">
-        <div class="slide">
-            <h2>💻 مثال الكود من Perplexity</h2>
-            <div class="code-box">
-&lt;!DOCTYPE html&gt;<br>
-&lt;html&gt;<br>
-&lt;head&gt;&lt;title&gt;عناية شعر&lt;/title&gt;&lt;/head&gt;<br>
-&lt;body&gt;<br>
-  &lt;h1&gt;منتجات عناية الشعر&lt;/h1&gt;<br>
-  &lt;img src="شامبو.jpg" width="200"&gt;<br>
-  &lt;p&gt;شامبو مغذي ٥٠ جنيه&lt;/p&gt;<br>
-  &lt;button onclick="alert('تم الطلب!')"&gt;اطلب الآن&lt;/button&gt;<br>
-&lt;/body&gt;<br>
-&lt;/html&gt;
-            </div>
-        </div>
-    </div>
+<!-- المرحلة 4 -->
+<div class="slide-container">
+<div class="slide">
+<h2>📦 حفظ الطلبات والعملاء</h2>
+<p>
+هنربط التطبيق بمكان يحفظ الطلبات تلقائي.
+</p>
+<div class="highlight">
+كل عميل يطلب الخدمة → البيانات تتحفظ عندك مباشرة.
+</div>
+</div>
+</div>
 
-    <!-- الشريحة 7: OneCompiler -->
-    <div class="slide-container" data-slide="7">
-        <div class="slide">
-            <h2>⚡ درس 1 - الخطوة 2: OneCompiler</h2>
-            <p>روح <a href="https://onecompiler.com/html" target="_blank">onecompiler.com/html</a></p>
-            <ol style="text-align: right; font-size: 1.3em;">
-                <li>انسخ الكود من Perplexity</li>
-                <li>الصقه في OneCompiler</li>
-                <li>اضغط Run</li>
-                <li>شوف النتيجة فورًا! 🎉</li>
-            </ol>
-        </div>
-    </div>
+<!-- المرحلة 5 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🌍 خلي التطبيق يشتغل على الإنترنت</h2>
+<p>
+هتنشري التطبيق والناس هتستخدمه من أي مكان.
+</p>
+<div class="highlight">
+أول لحظة تشوفي فيها تطبيقك شغال أونلاين... هتحسي إنك بدأتي مشروع حقيقي ❤️
+</div>
+</div>
+</div>
 
-    <!-- الشريحة 46: الختام -->
-    <div class="slide-container" data-slide="46">
-        <div class="slide">
-            <h1>🏆 مبروك!</h1>
-            <p>لقد بنيت موقعك الأول بنجاح!</p>
-            <div class="highlight">
-                🎓 الآن أنت مبرمج ويب<br>
-                💼 يمكنك بيع هذا الموقع<br>
-                🚀 جرب مواقع أكبر الآن<br>
-                📈 استمر في التعلم اليومي
-            </div>
-        </div>
-    </div>
+<!-- المرحلة 6 -->
+<div class="slide-container">
+<div class="slide">
+<h2>💰 ازاي تحققي دخل</h2>
+<ul>
+<li>استقبلي الطلبات على واتساب</li>
+<li>استلمي فلوسك على InstaPay</li>
+<li>استخدمي فيسبوك للتسويق</li>
+<li>خلي الناس ترجع تستخدم خدمتك يوميًا</li>
+</ul>
+</div>
+</div>
 
-    <!-- الشريحة 47: مشاريع مقترحة -->
-    <div class="slide-container" data-slide="47">
-        <div class="slide">
-            <h2>🚀 مشاريع التدريب التالية</h2>
-            <ul style="text-align: right; font-size: 1.3em; line-height: 2;">
-                <li>موقع مطعم توصيل</li>
-                <li>تطبيق حجز صالون</li>
-                <li>متجر ملابس إلكتروني</li>
-                <li>نظام إدارة موظفين</li>
-            </ul>
-            <a href="https://perplexity.ai" class="link-btn" target="_blank">ابدأ مشروعك الجديد</a>
-        </div>
-    </div>
+<!-- المرحلة 7 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🔥 قوالب جاهزة</h2>
+<p>
+مش هتبدئي من الصفر.
+</p>
+<ul>
+<li>تطبيق صالون</li>
+<li>تطبيق توصيل</li>
+<li>تطبيق قهوة</li>
+<li>تطبيق طلبات</li>
+</ul>
+</div>
+</div>
 
-    <!-- الشريحة 48: شكر -->
-    <div class="slide-container" data-slide="48">
-        <div class="slide">
-            <h1>شكرًا لك! 🌟</h1>
-            <p>الآن لديك موقع Live على الإنترنت</p>
-            <p><strong>شاركنا موقعك: familybusiness@example.com</strong></p>
-            <div style="font-size: 1.5em; margin-top: 30px;">
-                💻 مبرمج ويب جديد 🎉
-            </div>
-        </div>
-    </div>
+<!-- المرحلة 8 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🚀 أهم نصيحة</h2>
+<p>
+اختاري خدمة الناس محتاجاها فعلًا...
+واستمري عليها.
+</p>
+<div class="highlight">
+أنتِ لا تبنين مجرد تطبيق...
+أنتِ تبنين مشروعًا حقيقيًا.
+</div>
+</div>
+</div>
 
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev">السابق ←</button>
-        <button class="nav-btn" id="next">التالي →</button>
-    </div>
+<!-- المرحلة 9 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🏆 مبروك!</h2>
+<p>
+دلوقتي بقى عندك تطبيق حقيقي على الإنترنت ✨
+</p>
+<button class="btn" id="certificateBtn">🎓 احصلي على شهادتك</button>
+</div>
+</div>
 
-    <script type="module">
-        // Firebase Config من مشروع kidsup-e998d
-        const firebaseConfig = {
-            apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
-            authDomain: "kidsup-e998d.firebaseapp.com",
-            projectId: "kidsup-e998d",
-            storageBucket: "kidsup-e998d.firebasestorage.app",
-            messagingSenderId: "959800471628",
-            appId: "1:959800471628:web:51bfdc7a5209de7e7e44e9",
-            measurementId: "G-V97ETZX7K0"
-        };
+<!-- المرحلة 10 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🔓 قسم المشاريع الحقيقية</h2>
+<p>
+هذا القسم يتم فتحه بعد مشاركة الشهادة.
+</p>
+<div class="highlight">
+مشاريع كل شارع في مصر محتاجها ❤️
+</div>
+</div>
+</div>
 
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+<div class="nav">
+<button class="btn" id="prevBtn">السابق</button>
+<button class="btn" id="nextBtn">التالي</button>
+</div>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+<script type="module">
 
-        // DOM Elements
-        const loadingScreen = document.getElementById('loadingScreen');
-        const errorScreen = document.getElementById('errorScreen');
+// Firebase Config
+const firebaseConfig = {
+apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
+authDomain: "kidsup-e998d.firebaseapp.com",
+projectId: "kidsup-e998d",
+storageBucket: "kidsup-e998d.firebasestorage.app",
+messagingSenderId: "959800471628",
+appId: "1:959800471628:web:51bfdc7a5209de7e7e44e9",
+measurementId: "G-V97ETZX7K0"
+};
 
-        // Course verification function
-        async function checkCourseAccess(user) {
-            if (!user) {
-                showError('يرجى تسجيل الدخول أولاً');
-                return false;
-            }
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-            try {
-                // تحقق من تفعيل الكورس في Firestore
-                // المسار: users/{userId}/courses/programming-course
-                const courseDoc = doc(db, 'users', user.uid, 'courses', 'programming-course');
-                const courseSnap = await getDoc(courseDoc);
-                
-                if (courseSnap.exists()) {
-                    const courseData = courseSnap.data();
-                    if (courseData.courseActive === true) {
-                        console.log('✅ الكورس مفعّل للمستخدم:', user.uid);
-                        return true;
-                    }
-                }
-                
-                console.log('❌ الكورس غير مفعّل للمستخدم:', user.uid);
-                showError('هذا الكورس غير مفعّل. يجب تفعيله من لوحة تحكم الإدارة.');
-                return false;
-                
-            } catch (error) {
-                console.error('خطأ في التحقق من الكورس:', error);
-                showError('حدث خطأ في التحقق من تفعيل الكورس');
-                return false;
-            }
-        }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-        // Show error screen
-        function showError(message) {
-            loadingScreen.classList.add('hidden');
-            errorScreen.style.display = 'flex';
-            errorScreen.querySelector('p').textContent = message;
-        }
+const loadingScreen = document.getElementById('loadingScreen');
+const errorScreen = document.getElementById('errorScreen');
+const errorMessage = document.getElementById('errorMessage');
 
-        // Hide loading and show course
-        function showCourse() {
-            loadingScreen.classList.add('hidden');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                initializeCourse();
-            }, 500);
-        }
+let currentUser = null;
 
-        // Initialize course slides
-        function initializeCourse() {
-            let currentSlide = 1;
-            const totalSlides = 48;
-            const containers = document.querySelectorAll('.slide-container');
+async function checkCourseAccess(user){
 
-            function showSlide(n) {
-                containers.forEach((container, index) => {
-                    container.classList.toggle('active', index + 1 === n);
-                });
-                document.getElementById('counter').textContent = `${n} / ${totalSlides}`;
-                document.getElementById('progress').style.width = `${(n / totalSlides) * 100}%`;
-                currentSlide = n;
-            }
+if(!user){
+showError('يجب تسجيل الدخول أولًا');
+return;
+}
 
-            document.getElementById('next').addEventListener('click', () => {
-                if (currentSlide < totalSlides) showSlide(currentSlide + 1);
-            });
+try{
 
-            document.getElementById('prev').addEventListener('click', () => {
-                if (currentSlide > 1) showSlide(currentSlide - 1);
-            });
+const courseRef = doc(db,'users',user.uid,'courses','programming-course');
+const courseSnap = await getDoc(courseRef);
 
-            // Keyboard navigation
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight') document.getElementById('next').click();
-                if (e.key === 'ArrowLeft') document.getElementById('prev').click();
-            });
+if(courseSnap.exists()){
+const data = courseSnap.data();
 
-            // ابدأ بالشريحة الأولى
-            showSlide(1);
-        }
+if(data.courseActive === true){
+loadingScreen.style.display='none';
+initializeSlides();
+return;
+}
+}
 
-        // Monitor authentication state
-        onAuthStateChanged(auth, async (user) => {
-            if (await checkCourseAccess(user)) {
-                showCourse();
-            }
-        });
+showError('الكورس غير مفعل لهذا الحساب');
 
-        // إذا لم يكن هناك مستخدم مسجل دخول، اعرض شاشة الخطأ
-        console.log('جاري التحقق من حالة تسجيل الدخول...');
-    </script>
+}catch(error){
+console.error(error);
+showError('حدث خطأ أثناء التحقق');
+}
+}
+
+function showError(message){
+loadingScreen.style.display='none';
+errorScreen.style.display='flex';
+errorMessage.textContent = message;
+}
+
+onAuthStateChanged(auth,(user)=>{
+currentUser = user;
+checkCourseAccess(user);
+});
+
+function initializeSlides(){
+
+const slides = document.querySelectorAll('.slide-container');
+const total = slides.length;
+let current = 0;
+
+function showSlide(index){
+slides.forEach(slide=>slide.classList.remove('active'));
+slides[index].classList.add('active');
+
+document.getElementById('counter').innerText = `${index+1} / ${total}`;
+document.getElementById('progress').style.width = `${((index+1)/total)*100}%`;
+}
+
+showSlide(current);
+
+nextBtn.onclick = ()=>{
+if(current < total-1){
+current++;
+showSlide(current);
+}
+};
+
+prevBtn.onclick = ()=>{
+if(current > 0){
+current--;
+showSlide(current);
+}
+};
+
+}
+
+// شهادة الكورس
+const certificateBtn = document.getElementById('certificateBtn');
+
+certificateBtn.addEventListener('click',()=>{
+
+if(currentUser){
+
+document.getElementById('studentName').innerText = currentUser.displayName || 'طالبة الكورس';
+document.getElementById('certificateScreen').style.display='flex';
+}
+
+});
+
+window.closeCertificate = ()=>{
+document.getElementById('certificateScreen').style.display='none';
+}
+
+// مشاركة الشهادة + فتح المشاريع
+const shareBtn = document.getElementById('shareBtn');
+
+shareBtn.addEventListener('click', async ()=>{
+
+const shareText = '🎓 أنهيت كورس بناء التطبيقات بالذكاء الاصطناعي وبدأت أول خطوة لمشروعي من الموبايل ✨';
+
+window.open(`https://www.facebook.com/sharer/sharer.php?u=https://yourwebsite.com&quote=${encodeURIComponent(shareText)}`,'_blank');
+
+try{
+
+const courseRef = doc(db,'users',currentUser.uid,'courses','programming-course');
+
+await updateDoc(courseRef,{
+projectsUnlocked:true,
+certificateShared:true
+});
+
+alert('🎉 تم فتح قسم المشاريع الحقيقية بنجاح');
+
+}catch(error){
+console.error(error);
+alert('حدث خطأ أثناء التفعيل');
+}
+
+});
+
+</script>
+
 </body>
 </html>
