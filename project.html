@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الكورس العملي - مشروع تنظيف المنازل</title>
+
+<style>
+body{font-family:Arial;background:#f5f7fb;margin:0}
+.slide{display:none;padding:20px;max-width:900px;margin:auto}
+.active{display:block}
+h1,h2{color:#333}
+.btn{display:inline-block;background:#6c5ce7;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;margin-top:15px;border:none;cursor:pointer}
+input,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc}
+img{width:100%;border-radius:15px;margin-top:15px}
+.nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%)}
+.price{font-size:20px;font-weight:bold;color:green}
+</style>
+</head>
+<body>
+
+<!-- Slide 1 -->
+<div class="slide active">
+<h1>🚀 هنبني مشروع حقيقي</h1>
+<p>تطبيق تنظيف منازل + لوحة تحكم</p>
+<button class="btn" onclick="next()">ابدأ</button>
+</div>
+
+<!-- Slide 2 -->
+<div class="slide">
+<h2>💡 فكرة المشروع</h2>
+<p>العميل يطلب خدمة تنظيف → الطلب يتسجل → الأدمن يتابعه</p>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide">
+<h2>🤖 إنشاء التطبيق</h2>
+<a class="btn" href="https://chatgpt.com" target="_blank">افتح ChatGPT</a>
+<pre>
+اعمل تطبيق تنظيف منازل يحتوي على نموذج طلب
+</pre>
+</div>
+
+<!-- Slide 4: التطبيق الفعلي -->
+<div class="slide">
+<h2>🧾 نموذج الطلب (التطبيق الحقيقي)</h2>
+
+<input id="name" placeholder="الاسم">
+<input id="phone" placeholder="رقم الموبايل">
+<input id="address" placeholder="العنوان">
+<input type="date" id="date">
+<input type="time" id="time">
+
+<select id="rooms">
+<option value="1">غرفة واحدة</option>
+<option value="2">غرفتين</option>
+<option value="3">3 غرف</option>
+</select>
+
+<select id="kitchen">
+<option value="0">بدون مطبخ</option>
+<option value="1">يشمل المطبخ</option>
+</select>
+
+<p class="price">السعر: <span id="price">0</span> جنيه</p>
+
+<button class="btn" onclick="sendOrder()">تأكيد الطلب</button>
+<button class="btn" onclick="whatsapp()">تواصل واتساب</button>
+
+</div>
+
+<!-- Slide 5: Firebase شرح -->
+<div class="slide">
+<h2>📦 Firebase</h2>
+<p>اعملي مشروع + Firestore</p>
+</div>
+
+<!-- Slide 6: Admin -->
+<div class="slide">
+<h2>👨‍💼 لوحة الأدمن</h2>
+<button class="btn" onclick="loadOrders()">عرض الطلبات</button>
+<div id="orders"></div>
+</div>
+
+<!-- Slide 7 -->
+<div class="slide">
+<h1>🏆 مبروك</h1>
+<p>بقي عندك مشروع شغال</p>
+</div>
+
+<div class="nav">
+<button class="btn" onclick="prev()">السابق</button>
+<button class="btn" onclick="next()">التالي</button>
+</div>
+
+<script type="module">
+
+let current=0;
+const slides=document.querySelectorAll('.slide');
+
+window.next=()=>{
+if(current<slides.length-1){
+slides[current].classList.remove('active');
+current++;
+slides[current].classList.add('active');
+}
+}
+
+window.prev=()=>{
+if(current>0){
+slides[current].classList.remove('active');
+current--;
+slides[current].classList.add('active');
+}
+}
+
+// حساب السعر
+const rooms=document.getElementById('rooms');
+const kitchen=document.getElementById('kitchen');
+
+function calc(){
+let price = rooms.value*100 + kitchen.value*50;
+document.getElementById('price').innerText = price;
+}
+
+rooms.onchange=calc;
+kitchen.onchange=calc;
+calc();
+
+// Firebase
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
+authDomain: "kidsup-e998d.firebaseapp.com",
+projectId: "kidsup-e998d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// إرسال الطلب
+window.sendOrder = async ()=>{
+await addDoc(collection(db,'orders'),{
+name: name.value,
+phone: phone.value,
+address: address.value,
+date: date.value,
+time: time.value,
+rooms: rooms.value,
+kitchen: kitchen.value,
+price: document.getElementById('price').innerText,
+status:'new'
+});
+alert('تم إرسال الطلب');
+}
+
+// واتساب
+window.whatsapp = ()=>{
+window.open('https://wa.me/201000000000');
+}
+
+// تحميل الطلبات
+window.loadOrders = async ()=>{
+const querySnapshot = await getDocs(collection(db, "orders"));
+let html='';
+querySnapshot.forEach(doc=>{
+let d=doc.data();
+html += `<div style="background:#fff;padding:10px;margin:10px;border-radius:10px">
+${d.name} - ${d.phone} <br>
+${d.price} جنيه
+</div>`;
+});
+orders.innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
