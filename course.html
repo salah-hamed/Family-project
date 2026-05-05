@@ -39,26 +39,31 @@ p{font-size:22px;line-height:1.8;margin-bottom:20px;}
 
 .highlight{
 background:linear-gradient(135deg,#ffe7f1,#ede4ff);
-padding:25px;border-radius:20px;margin-top:20px;font-size:22px;font-weight:bold;
+padding:25px;border-radius:20px;margin-top:20px;font-size:24px;font-weight:bold;
 }
 
 .btn{
 background:linear-gradient(135deg,#7b4dff,#ff4f8b);
 color:#fff;padding:16px 30px;border:none;border-radius:50px;
-font-size:20px;cursor:pointer;margin:10px;
+font-size:20px;cursor:pointer;margin:10px;transition:0.3s;
 }
+.btn:hover{transform:translateY(-4px);}
 
-.nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;}
+.nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:999;}
 .progress{position:fixed;top:0;left:0;height:6px;background:linear-gradient(90deg,#7b4dff,#ff4f8b);width:0;}
 .counter{position:fixed;top:20px;left:20px;background:#fff;padding:10px 20px;border-radius:50px;}
 
 ul{text-align:right;margin-top:20px;line-height:2.2;font-size:22px;}
 
 .image-slider{
-display:flex;gap:10px;overflow-x:auto;margin-top:20px;
+display:flex;
+gap:10px;
+overflow-x:auto;
+margin-top:20px;
 }
 .image-slider img{
-width:250px;border-radius:15px;
+width:250px;
+border-radius:15px;
 }
 </style>
 </head>
@@ -68,37 +73,60 @@ width:250px;border-radius:15px;
 <div class="loading-screen" id="loadingScreen">
 <div class="spinner"></div>
 <h2>جاري تجهيز الكورس...</h2>
+<p>لحظات ويتم فتح المحتوى ✨</p>
 </div>
 
 <div class="error-screen" id="errorScreen">
 <h1>❌ الكورس غير مفعل</h1>
-<p id="errorMessage"></p>
+<p id="errorMessage">يجب تفعيل الكورس من الإدارة أولًا.</p>
+<button class="btn" onclick="window.location.href='login.html'">العودة لتسجيل الدخول</button>
+</div>
+
+<!-- 🔥 الشهادة (لم يتم تغييرها) -->
+<div class="certificate-screen" id="certificateScreen">
+<div class="certificate-card">
+<div class="certificate-title">🎓 شهادة إتمام الكورس</div>
+<h2 id="studentName">اسم المتدربة</h2>
+<p>أتمت بنجاح كورس بناء التطبيقات والمشاريع بالذكاء الاصطناعي</p>
+<div class="badge">AI Business Course</div>
+<br><br>
+<button class="btn" id="shareBtn">📲 مشاركة الشهادة على فيسبوك</button>
+<button class="btn" onclick="closeCertificate()">إغلاق</button>
+</div>
 </div>
 
 <div class="progress" id="progress"></div>
-<div class="counter" id="counter"></div>
+<div class="counter" id="counter">1 / 10</div>
 
 <!-- 1 -->
-<div class="slide-container active"><div class="slide">
+<div class="slide-container active">
+<div class="slide">
 <h1>💛 ابنِ مشروعك من موبايلك فقط</h1>
-<p>هتتعلمي تبني تطبيق حقيقي بدون برمجة</p>
-</div></div>
+<p>في الكورس ده هتتعلمي تبني تطبيق حقيقي بالذكاء الاصطناعي</p>
+<div class="highlight">كل خطوة هتعمليها بنفسك ✨</div>
+</div>
+</div>
 
-<!-- 2 -->
-<div class="slide-container"><div class="slide">
+<!-- 2 (تم حذف الأفكار) -->
+<div class="slide-container">
+<div class="slide">
 <h2>🎯 حددي فكرة مشروعك</h2>
-<p>اختاري خدمة الناس محتاجاها فعلًا</p>
-<div class="highlight">كل ما المشكلة حقيقية → النجاح أعلى</div>
-</div></div>
+<p>اختاري خدمة الناس محتاجاها فعلًا في منطقتك.</p>
+<div class="highlight">كل ما المشكلة حقيقية → النجاح أعلى ❤️</div>
+</div>
+</div>
 
 <!-- 3 -->
-<div class="slide-container"><div class="slide">
-<h2>🤖 استخدمي ChatGPT</h2>
+<div class="slide-container">
+<div class="slide">
+<h2>🤖 افتحي ChatGPT وابني التطبيق</h2>
 
-<p>انسخي البرومبت أو اكتبي فكرة مشروعك</p>
+<a class="btn" href="https://chatgpt.com" target="_blank">فتح ChatGPT</a>
+
+<p>انسخي البرومبت أو اكتبي فكرة مشروعك:</p>
 
 <div class="highlight">
-اعمل لي تطبيق PWA بسيط...
+اعمل لي تطبيق PWA عربي بسيط لتوصيل القهوة...
 </div>
 
 <div class="image-slider">
@@ -106,13 +134,15 @@ width:250px;border-radius:15px;
 <img src="chat2.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 4 (NEW OneCompiler) -->
-<div class="slide-container"><div class="slide">
-<h2>💻 تشغيل الكود</h2>
+<!-- 🔥 سلايد جديد OneCompiler -->
+<div class="slide-container">
+<div class="slide">
+<h2>💻 تشغيل الكود على OneCompiler</h2>
 
-<a class="btn" href="https://onecompiler.com/html" target="_blank">فتح الموقع</a>
+<a class="btn" href="https://onecompiler.com/html" target="_blank">فتح OneCompiler</a>
 
 <ul>
 <li>الصقي الكود</li>
@@ -124,130 +154,232 @@ width:250px;border-radius:15px;
 <img src="one2.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 5 Firebase -->
-<div class="slide-container"><div class="slide">
-<h2>📦 Firebase</h2>
+<!-- 4 Firebase -->
+<div class="slide-container">
+<div class="slide">
+<h2>📦 إنشاء مشروع Firebase</h2>
+
+<a class="btn" href="https://console.firebase.google.com" target="_blank">فتح Firebase</a>
 
 <div class="image-slider">
 <img src="firebase1.png">
 <img src="firebase2.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 6 Firestore -->
-<div class="slide-container"><div class="slide">
-<h2>🗂️ Firestore</h2>
+<!-- 5 Firestore -->
+<div class="slide-container">
+<div class="slide">
+<h2>🗂️ إنشاء Firestore</h2>
 
 <div class="image-slider">
 <img src="firestore1.png">
 <img src="firestore2.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 7 Config -->
-<div class="slide-container"><div class="slide">
+<!-- 6 Config -->
+<div class="slide-container">
+<div class="slide">
 <h2>🔑 Firebase Config</h2>
 
 <div class="image-slider">
 <img src="config.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 8 Errors -->
-<div class="slide-container"><div class="slide">
+<!-- 7 ربط -->
+<div class="slide-container">
+<div class="slide">
+<h2>💻 ربط الكود بقاعدة البيانات</h2>
+
+<div class="image-slider">
+<img src="code.png">
+</div>
+
+</div>
+</div>
+
+<!-- 8 -->
+<div class="slide-container">
+<div class="slide">
 <h2>⚠️ حل المشاكل</h2>
 <p>انسخي الخطأ وابعتيه لـ ChatGPT</p>
-</div></div>
+</div>
+</div>
 
-<!-- 9 PWA -->
-<div class="slide-container"><div class="slide">
-<h2>📲 PWA</h2>
+<!-- 9 -->
+<div class="slide-container">
+<div class="slide">
+<h2>📲 تحويل التطبيق إلى PWA</h2>
 
 <div class="image-slider">
 <img src="pwa1.png">
 <img src="pwa2.png">
 </div>
 
-</div></div>
+</div>
+</div>
 
-<!-- 10 GitHub -->
-<div class="slide-container"><div class="slide">
-<h2>🌍 نشر المشروع</h2>
+<!-- 10 -->
+<div class="slide-container">
+<div class="slide">
+<h2>🌍 نشر التطبيق</h2>
+
+<a class="btn" href="https://github.com" target="_blank">فتح GitHub</a>
 
 <div class="image-slider">
 <img src="github1.png">
 <img src="github2.png">
 </div>
 
-</div></div>
-
-<!-- 11 -->
-<div class="slide-container"><div class="slide">
-<h2>💰 التطوير</h2>
-
-<div class="highlight">
-جربي التطبيق وعدّلي عليه باستخدام ChatGPT  
-لحد ما توصلي لأفضل نسخة 🚀
+</div>
 </div>
 
-</div></div>
+<!-- 11 -->
+<div class="slide-container">
+<div class="slide">
+<h2>💰 تطوير مشروعك</h2>
+
+<div class="highlight">
+جربي التطبيق كذا مرة ✨  
+وعدّلي عليه باستخدام ChatGPT  
+لحد ما توصلي لأفضل نسخة  
+دلوقتي انتي جاهزة للشغل 🚀
+</div>
+
+</div>
+</div>
 
 <!-- 12 -->
-<div class="slide-container"><div class="slide">
-<h2>🏆 مبروك</h2>
-
-<button class="btn" onclick="downloadCertificate()">🎓 تحميل الشهادة</button>
-
-</div></div>
+<div class="slide-container">
+<div class="slide">
+<h2>🏆 مبروك!</h2>
+<p>دلوقتي بقى عندك تطبيق شغال ❤️</p>
+<button class="btn" id="certificateBtn">🎓 احصلي على شهادتك</button>
+</div>
+</div>
 
 <div class="nav">
 <button class="btn" id="prevBtn">السابق</button>
 <button class="btn" id="nextBtn">التالي</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
 
-<script>
-let current=0;
-const slides=document.querySelectorAll('.slide-container');
+// Firebase Config (كما هو)
+const firebaseConfig = {
+apiKey: "AIzaSyAato5NfjFNO2rvOBpZxTfDdJVfdQNdZ4M",
+authDomain: "kidsup-e998d.firebaseapp.com",
+projectId: "kidsup-e998d",
+storageBucket: "kidsup-e998d.firebasestorage.app",
+messagingSenderId: "959800471628",
+appId: "1:959800471628:web:51bfdc7a5209de7e7e44e9",
+measurementId: "G-V97ETZX7K0"
+};
 
-function showSlide(i){
-slides.forEach(s=>s.classList.remove('active'));
-slides[i].classList.add('active');
-document.getElementById('counter').innerText=`${i+1}/${slides.length}`;
-document.getElementById('progress').style.width=((i+1)/slides.length*100)+'%';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loadingScreen = document.getElementById('loadingScreen');
+const errorScreen = document.getElementById('errorScreen');
+const errorMessage = document.getElementById('errorMessage');
+
+let currentUser = null;
+
+async function checkCourseAccess(user){
+if(!user){showError('يجب تسجيل الدخول أولًا');return;}
+
+try{
+const courseRef = doc(db,'users',user.uid,'courses','programming-course');
+const courseSnap = await getDoc(courseRef);
+
+if(courseSnap.exists()){
+const data = courseSnap.data();
+if(data.courseActive === true){
+loadingScreen.style.display='none';
+initializeSlides();
+return;
+}
 }
 
-nextBtn.onclick=()=>{if(current<slides.length-1){current++;showSlide(current)}}
-prevBtn.onclick=()=>{if(current>0){current--;showSlide(current)}}
+showError('الكورس غير مفعل لهذا الحساب');
 
-showSlide(0);
-
-// PDF
-async function downloadCertificate(){
-const { jsPDF } = window.jspdf;
-const doc = new jsPDF();
-
-doc.setFontSize(22);
-doc.text("شهادة إتمام الكورس",105,40,null,null,"center");
-
-doc.setFontSize(18);
-doc.text("طالبة الكورس",105,70,null,null,"center");
-
-doc.setFontSize(14);
-doc.text("أتمت بنجاح كورس الذكاء الاصطناعي",105,100,null,null,"center");
-
-doc.text("ابدئي مشروعك الآن 🚀",105,120,null,null,"center");
-
-doc.text("https://yourwebsite.com",105,150,null,null,"center");
-
-doc.save("certificate.pdf");
+}catch(error){
+console.error(error);
+showError('حدث خطأ أثناء التحقق');
 }
+}
+
+function showError(message){
+loadingScreen.style.display='none';
+errorScreen.style.display='flex';
+errorMessage.textContent = message;
+}
+
+onAuthStateChanged(auth,(user)=>{
+currentUser = user;
+checkCourseAccess(user);
+});
+
+function initializeSlides(){
+const slides = document.querySelectorAll('.slide-container');
+const total = slides.length;
+let current = 0;
+
+function showSlide(index){
+slides.forEach(slide=>slide.classList.remove('active'));
+slides[index].classList.add('active');
+document.getElementById('counter').innerText = `${index+1} / ${total}`;
+document.getElementById('progress').style.width = `${((index+1)/total)*100}%`;
+}
+
+showSlide(current);
+
+nextBtn.onclick = ()=>{if(current < total-1){current++;showSlide(current);}};
+prevBtn.onclick = ()=>{if(current > 0){current--;showSlide(current);}};
+}
+
+const certificateBtn = document.getElementById('certificateBtn');
+
+certificateBtn.addEventListener('click',()=>{
+if(currentUser){
+document.getElementById('studentName').innerText = currentUser.displayName || 'طالبة الكورس';
+document.getElementById('certificateScreen').style.display='flex';
+}
+});
+
+window.closeCertificate = ()=>{
+document.getElementById('certificateScreen').style.display='none';
+}
+
+const shareBtn = document.getElementById('shareBtn');
+
+shareBtn.addEventListener('click', async ()=>{
+const shareText = '🎓 أنهيت كورس بناء التطبيقات بالذكاء الاصطناعي ✨';
+window.open(`https://www.facebook.com/sharer/sharer.php?u=https://yourwebsite.com&quote=${encodeURIComponent(shareText)}`,'_blank');
+
+try{
+const courseRef = doc(db,'users',currentUser.uid,'courses','programming-course');
+await updateDoc(courseRef,{projectsUnlocked:true,certificateShared:true});
+alert('🎉 تم فتح قسم المشاريع الحقيقية');
+}catch(error){console.error(error);}
+});
+
 </script>
 
 </body>
