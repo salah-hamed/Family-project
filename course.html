@@ -188,23 +188,66 @@ width:260px;border-radius:15px;
 </div>
 
 <!-- 6 Firestore -->
+<!-- 6 Firestore (مُعدلة بالكامل) -->
 <div class="slide-container">
 <div class="slide">
-<h2>🗂️ إنشاء Firestore</h2>
+<h2>🗂️ إنشاء Firestore وقاعدة البيانات</h2>
 
 <ul>
-<li>Create Database</li>
-<li>Start in test mode</li>
+<li>ادخلي على Firestore Database</li>
+<li>اضغطي Create Database</li>
+<li>اختاري Start in test mode</li>
+<li>اضغطي Enable</li>
+</ul>
+
+<p>دلوقتي هننشئ Collection لتخزين الطلبات:</p>
+
+<div class="highlight">
+اسم الـ Collection: orders
+</div>
+
+<p>كل طلب هيكون Document جواه بيانات العميل</p>
+
+<p>ابعتِ البرومبت ده لـ ChatGPT:</p>
+
+<div class="highlight">
+اقترح أسماء Collections و Documents و Fields لتطبيق توصيل قهوة يحتوي على:
+- طلبات
+- عملاء
+- مناديب
+واشرح كل حقل وظيفته
+</div>
+
+<p>هيديلك أسماء زي:</p>
+
+<ul>
+<li>name</li>
+<li>phone</li>
+<li>address</li>
+<li>orderStatus</li>
+<li>createdAt</li>
+</ul>
+
+<p>ارجعي لـ Firestore واعملي:</p>
+
+<ul>
+<li>Add Document</li>
+<li>ضيفي الحقول بنفس الأسماء</li>
+<li>اختاري النوع (string / number / timestamp)</li>
 </ul>
 
 <div class="image-slider">
 <img src="firestore1.png">
 <img src="firestore2.png">
+<img src="firestore3.png">
+</div>
+
+<div class="highlight">
+كده قاعدة البيانات بقت جاهزة لاستقبال أي طلب تلقائي ✨
 </div>
 
 </div>
 </div>
-
 <!-- 7 Config -->
 <div class="slide-container">
 <div class="slide">
